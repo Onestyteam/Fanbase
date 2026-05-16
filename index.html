@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Fanbase · Пётр Елфимов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --color-background-primary:#0e0e0e;
+  --color-background-secondary:#141414;
+  --color-text-primary:#f0f0f0;
+  --color-text-secondary:#999;
+  --color-text-tertiary:#666;
+  --color-text-danger:#e05252;
+  --color-text-info:#6aa0e0;
+  --color-border-tertiary:#2a2a2a;
+  --color-border-secondary:#3a3a3a;
+  --color-border-info:rgba(106,160,224,.45);
+  --color-background-info:rgba(106,160,224,.10);
+  --border-radius-md:10px;
+  --border-radius-lg:16px;
+  --font-mono:'JetBrains Mono','Menlo','Consolas',monospace;
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.c-blue  {--c-fill:rgba(74,128,196,.14);--c-stroke:#6aa0e0;}
+.c-teal  {--c-fill:rgba(76,175,122,.14);--c-stroke:#5fcf9a;}
+.c-purple{--c-fill:rgba(155,111,212,.14);--c-stroke:#b890e8;}
+.c-amber {--c-fill:rgba(212,168,67,.14);--c-stroke:#e9b949;}
+.c-pink  {--c-fill:rgba(212,83,126,.14);--c-stroke:#e07595;}
+html,body{background:#000;color:#f0f0f0;font-family:'Manrope',sans-serif;min-height:100vh;}
+body{display:flex;justify-content:center;}
+.app{width:100%;max-width:480px;min-height:100vh;background:#0e0e0e;position:relative;overflow-x:hidden;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp 0.6s ease both;}
+@keyframes prizesIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes prizesOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-8px)}}
+@keyframes screenIn{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-thumb{background:#333;border-radius:99px;}
+
+/* === ОБЩИЕ ЭКРАНЫ === */
+.screen{display:none;padding-bottom:100px;}
+.screen.active{display:block;animation:screenIn .25s ease both;}
+
+.wrap{max-width:480px;margin:0 auto;}
+.lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#666;margin-bottom:10px;}
+.divider{border:none;border-top:1px solid #1a1a1a;}
+.more-link{font-size:11px;color:#555;text-decoration:none;border-bottom:1px solid #2a2a2a;padding-bottom:1px;cursor:pointer;}
+.more-link:hover{color:#f0f0f0;}
+
+/* === HERO (rating screen) === */
+.hero{position:relative;overflow:hidden;background:#0e0e0e;min-height:400px;}
+.hero img.artist{position:absolute;right:0;top:0;height:100%;width:58%;object-fit:cover;object-position:center top;}
+.hero-grad-h{position:absolute;inset:0;background:linear-gradient(to right,#0e0e0e 35%,rgba(14,14,14,.78) 58%,rgba(14,14,14,0) 82%);}
+.hero-grad-v{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 55%,#0e0e0e 100%);}
+.hero-logo{position:absolute;top:20px;left:20px;z-index:4;font-family:'Unbounded',sans-serif;font-size:15px;font-weight:700;color:#fff;letter-spacing:.04em;}
+.hero-logo span{color:#d4a843;}
+.hero-content{position:relative;z-index:3;padding:64px 20px 24px;}
+.hero-name{font-family:'Unbounded',sans-serif;font-size:30px;font-weight:700;line-height:1.1;color:#fff;margin-bottom:14px;}
+.hero-text{font-size:14px;color:#999;line-height:1.7;margin-bottom:22px;}
+.avatars{display:flex;align-items:center;}
+.av{width:28px;height:28px;border-radius:50%;border:2px solid #0e0e0e;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;font-family:'Unbounded',sans-serif;}
+.sp-text{font-size:14px;color:#999;margin-left:10px;}
+.sp-text strong{color:#f0f0f0;}
+
+/* === LEADERBOARD === */
+.tabs{display:flex;border-bottom:1px solid #1a1a1a;}
+.tab{padding:10px 16px;font-size:12px;font-weight:700;color:#555;border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer;transition:color .15s;}
+.tab.active{color:#f0f0f0;border-bottom-color:#f0f0f0;}
+.tab-hint{margin-left:auto;padding:10px 16px;font-size:12px;color:#555;}
+.podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;align-items:end;padding:20px 16px 12px;}
+.list-row{display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid #141414;transition:background .15s;cursor:pointer;}
+.list-row:hover{background:#111;}
+.list-row.me{background:rgba(212,168,67,.05);}
+.lrank{font-size:12px;font-weight:700;color:#666;width:16px;flex-shrink:0;text-align:center;}
+.lrank.me{color:#d4a843;}
+.lav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;flex-shrink:0;}
+.lhandle{flex:1;font-size:13px;color:#f0f0f0;}
+.lhandle.me{color:#d4a843;}
+.lscore{font-size:13px;color:#666;}
+
+/* === NEXT RANK === */
+.next-rank{margin:0 16px;background:#141414;border:1px solid #222;border-radius:14px;padding:14px 16px;cursor:pointer;}
+.nr-lbl{font-size:11px;color:#555;margin-bottom:3px;letter-spacing:.06em;text-transform:uppercase;}
+.nr-val{font-family:'Unbounded',sans-serif;font-size:16px;font-weight:700;color:#f0f0f0;}
+.nr-val span{color:#d4a843;}
+.prog-bg{height:5px;border-radius:99px;background:#1f1f1f;overflow:hidden;}
+.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#8a6020,#d4a843);}
+
+/* === ACHIEVEMENTS (rating screen mini) === */
+.ach-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #141414;cursor:pointer;transition:background .15s;}
+.ach-row:hover{background:#111;}
+.ach-ico{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ach-name{font-size:13px;font-weight:600;color:#f0f0f0;margin-bottom:3px;}
+.ach-bar-bg{height:3px;border-radius:99px;background:#1f1f1f;overflow:hidden;}
+.ach-bar{height:100%;border-radius:99px;}
+.ach-prog{font-size:11px;color:#555;margin-top:3px;}
+.ach-pts{font-size:12px;color:#666;flex-shrink:0;white-space:nowrap;}
+
+/* === TABBAR === */
+.tabbar-outer{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;justify-content:center;pointer-events:none;}
+.tabbar{width:100%;max-width:480px;background:rgba(14,14,14,.97);border-top:1px solid #1a1a1a;padding:0 16px 18px;display:flex;align-items:center;gap:0;backdrop-filter:blur(12px);pointer-events:auto;}
+.tb-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 0;cursor:pointer;background:none;border:none;font-family:inherit;}
+.tb-icon{font-size:22px;color:#666;transition:color .15s;}
+.tb-lbl{font-size:11px;color:#555;transition:color .15s;}
+.tb-item.active .tb-icon{color:#f0f0f0;}
+.tb-item.active .tb-lbl{color:#f0f0f0;font-weight:700;}
+.tb-cta-slot{flex:1.4;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;background:none;border:none;font-family:inherit;}
+.tb-cta-wrap{position:relative;margin-top:-20px;width:58px;height:58px;}
+.tb-cta-glow{position:absolute;left:50%;top:50%;width:58px;height:58px;margin-left:-29px;margin-top:-29px;border-radius:50%;background:radial-gradient(circle, rgba(212,168,67,.7) 0%, rgba(212,168,67,.25) 45%, rgba(212,168,67,0) 75%);pointer-events:none;animation:ctaGlow 2.6s ease-in-out infinite;z-index:0;}
+.tb-cta-btn{position:relative;width:58px;height:58px;border-radius:50%;background:radial-gradient(circle at 30% 25%, #f0c560 0%, #d4a843 55%, #b88a2a 100%);display:flex;align-items:center;justify-content:center;border:3px solid #0e0e0e;box-shadow:0 4px 16px rgba(212,168,67,.45), inset 0 -2px 6px rgba(0,0,0,.18), inset 0 1.5px 2px rgba(255,255,255,.4);transition:transform .15s;color:#3a2a08;overflow:hidden;z-index:1;isolation:isolate;}
+.tb-cta-btn .tb-cta-bolt{position:relative;z-index:2;filter:drop-shadow(0 1px 0 rgba(255,235,180,.55));}
+/* iOS-safe shine: круглая маска вместо overflow:hidden + border-radius */
+.tb-cta-shine{position:absolute;inset:0;border-radius:50%;-webkit-mask-image:radial-gradient(circle, #000 99%, transparent 100%);mask-image:radial-gradient(circle, #000 99%, transparent 100%);overflow:hidden;pointer-events:none;z-index:1;}
+.tb-cta-shine::before{content:"";position:absolute;top:-30%;left:-80%;width:55%;height:160%;background:linear-gradient(115deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.9) 50%, rgba(255,255,255,0) 100%);transform:translateX(0) rotate(8deg);animation:ctaSheen 5s linear infinite;mix-blend-mode:screen;}
+.tb-cta-btn:hover{transform:scale(1.06);}
+.tb-cta-btn:active{transform:scale(0.97);}
+@keyframes ctaGlow{
+  0%,100%{transform:scale(1);opacity:.55;}
+  50%{transform:scale(1.55);opacity:0;}
+}
+@keyframes ctaSheen{
+  /* 0–60%: блик стоит за правым краем кнопки, невидим */
+  0%{transform:translateX(360%) rotate(8deg);}
+  60%{transform:translateX(360%) rotate(8deg);}
+  /* В этой точке мгновенно сбрасываем в стартовую позицию слева (тоже невидимую) */
+  60.01%{transform:translateX(0) rotate(8deg);}
+  /* 60–95%: проход через кнопку */
+  95%{transform:translateX(360%) rotate(8deg);}
+  /* 95–100%: добегаем до конечной паузы (всё ещё невидим) */
+  100%{transform:translateX(360%) rotate(8deg);}
+}
+@media (prefers-reduced-motion:reduce){
+  .tb-cta-glow,.tb-cta-shine::before{animation:none;}
+}
+.tb-cta-lbl{font-size:11px;color:#d4a843;font-weight:700;}
+/* Профиль-таб: подсветка золотом только когда активен */
+.tb-item.profile-tab .tb-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#3a2a20,#5a3a20);display:flex;align-items:center;justify-content:center;border:1.5px solid transparent;transition:border-color .15s;}
+.tb-item.profile-tab.active .tb-av{border-color:#d4a843;}
+.tb-av-rank{font-family:'Unbounded',sans-serif;font-size:9px;font-weight:700;color:#d4a843;line-height:1;}
+.tb-item.profile-tab.active .tb-lbl{color:#d4a843;}
+
+/* === MODALS === */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.88);overflow-y:auto;padding:24px 16px;}
+.modal-overlay.open{display:block;}
+
+/* RULES */
+.rules-box{max-width:480px;margin:0 auto;background:#141414;border:1px solid #2a2a2a;border-radius:20px;padding:28px 24px 32px;}
+.rules-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;}
+.rules-title{font-family:'Unbounded',sans-serif;font-size:17px;font-weight:700;color:#f0f0f0;margin-bottom:4px;}
+.rules-sub{font-size:12px;color:#555;}
+.modal-close{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:50%;width:34px;height:34px;font-size:18px;color:#666;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.modal-close:hover{background:#222;color:#f0f0f0;}
+.rules-section{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#666;margin-bottom:10px;}
+.rules-table{width:100%;border-collapse:collapse;margin-bottom:22px;}
+.rules-table thead tr{border-bottom:1px solid #222;}
+.rules-table th{text-align:left;padding:7px 0;font-size:11px;color:#555;font-weight:600;}
+.rules-table th:nth-child(2){text-align:center;}
+.rules-table th:nth-child(3){text-align:right;}
+.rules-table tbody tr{border-bottom:1px solid #1a1a1a;}
+.rules-table td{padding:11px 0;font-size:14px;color:#f0f0f0;vertical-align:middle;}
+.rules-table td:nth-child(2){text-align:center;font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;}
+.rules-table td:nth-child(3){text-align:right;font-size:12px;color:#666;}
+.deduct-card{display:flex;align-items:center;gap:12px;padding:11px 13px;background:#1a0e0e;border:1px solid #3a1a1a;border-radius:12px;margin-bottom:7px;}
+.deduct-text{flex:1;font-size:13px;color:#ccc;}
+.deduct-val{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:#e05252;flex-shrink:0;}
+.modal-note{font-size:13px;color:#555;padding-left:12px;border-left:2px solid #2a2a2a;border-radius:0;line-height:1.6;margin-bottom:7px;}
+
+/* SUPPORT */
+.sup-card{border:1px solid #1e1e1e;border-radius:16px;padding:16px;display:flex;gap:14px;align-items:flex-start;margin-bottom:10px;}
+.sup-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;font-weight:700;color:#d4a843;}
+.sup-title{font-size:15px;font-weight:700;color:#f0f0f0;margin:0 0 3px;}
+.sup-sub{font-size:13px;color:#666;margin:0 0 12px;line-height:1.5;}
+.sup-pts{font-size:11px;font-weight:700;background:rgba(76,175,122,0.12);color:#4caf7a;padding:2px 8px;border-radius:50px;white-space:nowrap;flex-shrink:0;}
+.amt-btn{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 0;font-size:13px;font-weight:500;color:var(--color-text-primary);cursor:pointer;font-family:'Manrope',sans-serif;transition:all .15s;text-align:center;}
+.amt-btn:hover{border-color:var(--color-border-secondary);}
+.amt-btn.suggested{background:var(--color-background-info);border-color:var(--color-border-info);color:var(--color-text-info);}
+.amt-btn.selected{background:var(--color-text-primary);color:var(--color-background-primary);border-color:var(--color-text-primary);}
+.amt-input{width:100%;padding:10px 8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);color:var(--color-text-primary);font-family:'Manrope',sans-serif;font-size:13px;font-weight:500;outline:none;transition:border-color .15s,box-shadow .15s,background .15s;text-align:center;}
+.amt-input::placeholder{color:var(--color-text-tertiary);font-weight:500;}
+.amt-input::-webkit-outer-spin-button,
+.amt-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.amt-input{-moz-appearance:textfield;}
+.amt-input:focus{border-color:#d4a843;box-shadow:0 0 0 3px rgba(212,168,67,.12);background:var(--color-background-primary);}
+.amt-input.selected{background:var(--color-text-primary);color:var(--color-background-primary);border-color:var(--color-text-primary);}
+.amt-input.selected::placeholder{color:rgba(14,14,14,.55);}
+.bonus-hint{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#4caf7a;background:rgba(76,175,122,.1);border:0.5px solid rgba(76,175,122,.25);padding:6px 10px;border-radius:var(--border-radius-md);animation:fadeUp .25s ease both;}
+.invalid-hint{font-size:11px;color:var(--color-text-danger);animation:fadeUp .2s ease both;}
+.sup-confirm:disabled{cursor:not-allowed;}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(14,14,14,.25);border-top-color:#0e0e0e;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:8px;}
+.spinner.light{border-color:rgba(255,255,255,.2);border-top-color:#fff;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* === Support cards (новый макет) === */
+.sup-card-v2{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:16px;margin-bottom:12px;}
+.sup-card-v2 .sc-head{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.sup-card-v2 .sc-ico{width:32px;height:32px;border-radius:var(--border-radius-md);background:var(--c-fill);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sup-card-v2 .sc-title{flex:1;font-size:15px;font-weight:500;color:var(--color-text-primary);}
+.sup-card-v2 .sc-badge{font-size:11px;padding:3px 8px;border-radius:var(--border-radius-md);background:var(--color-background-secondary);color:var(--color-text-secondary);font-weight:500;white-space:nowrap;}
+.sup-card-v2 .sc-desc{font-size:13px;color:var(--color-text-secondary);margin-bottom:14px;line-height:1.4;}
+.sup-card-v2 .sc-controls{display:flex;flex-direction:column;gap:10px;}
+.sc-accent{color:#4caf7a;font-weight:600;}
+.sup-confirm-v2{width:100%;padding:12px;border-radius:var(--border-radius-md);border:none;background:var(--color-text-primary);color:var(--color-background-primary);font-size:14px;font-weight:500;cursor:pointer;font-family:'Manrope',sans-serif;transition:opacity .15s,background .15s;}
+.sup-confirm-v2:disabled{background:var(--color-background-secondary);color:var(--color-text-tertiary);border:0.5px solid var(--color-border-tertiary);cursor:not-allowed;}
+.upload-btn{width:100%;padding:14px;border-radius:var(--border-radius-md);border:0.5px dashed var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Manrope',sans-serif;transition:border-color .15s,background .15s;}
+.upload-btn:hover{border-color:#d4a843;}
+.upload-meta{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;color:var(--color-text-tertiary);}
+.file-pill{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-bottom:8px;border:0.5px solid var(--color-border-tertiary);}
+.file-pill .fp-name{flex:1;font-size:13px;color:var(--color-text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.file-pill .fp-rm{background:none;border:none;color:var(--color-text-tertiary);cursor:pointer;font-size:18px;line-height:1;padding:0 4px;}
+.file-pill .fp-rm:hover{color:var(--color-text-primary);}
+.hash-row{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-bottom:10px;}
+.hash-tag{flex:1;font-size:14px;font-weight:500;font-family:var(--font-mono);color:var(--color-text-primary);}
+.copy-pill{display:flex;align-items:center;gap:4px;padding:4px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);color:var(--color-text-secondary);font-size:12px;cursor:pointer;font-family:'Manrope',sans-serif;transition:color .15s,border-color .15s;}
+.copy-pill:hover{color:var(--color-text-primary);border-color:var(--color-border-secondary);}
+.vk-metric{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);}
+.vk-metric .vm-val{font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.connect-btn{width:100%;padding:12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-primary);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Manrope',sans-serif;transition:background .15s;}
+.connect-btn:hover{background:#1c1c1c;}
+.sup-confirm{width:100%;margin-top:12px;padding:11px;border-radius:50px;font-family:'Manrope',sans-serif;font-size:13px;font-weight:700;cursor:pointer;border:1px solid #2a2a2a;background:#1a1a1a;color:#666;transition:all .15s;}
+.sup-confirm.ready{background:#f0f0f0;color:#0e0e0e;border-color:#f0f0f0;}
+.sup-confirm.ready:hover{background:#fff;}
+.upload-zone{border:1px dashed #2a2a2a;border-radius:12px;padding:14px;text-align:center;cursor:pointer;transition:border-color .15s;}
+.upload-zone:hover{border-color:#555;}
+.file-row{display:flex;align-items:center;gap:8px;background:#1a1a1a;border-radius:10px;padding:8px 12px;margin-bottom:10px;}
+.file-name{flex:1;font-size:13px;color:#f0f0f0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.file-remove{font-size:20px;color:#555;cursor:pointer;line-height:1;flex-shrink:0;}
+.pending-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(212,168,67,0.12);color:#d4a843;font-size:12px;font-weight:600;padding:4px 10px;border-radius:50px;}
+.success-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(76,175,122,0.12);color:#4caf7a;font-size:12px;font-weight:600;padding:4px 10px;border-radius:50px;}
+.vk-row{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#141414;border-radius:10px;margin-bottom:6px;}
+.hashtag-pill{background:#1a1a1a;border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.copy-btn{background:none;border:none;font-size:12px;color:#666;cursor:pointer;font-family:'Manrope',sans-serif;}
+.copy-btn:hover{color:#f0f0f0;}
+
+/* ACH-GRID MODAL */
+.ach-modal-box{max-width:480px;margin:0 auto;background:#141414;border:1px solid #2a2a2a;border-radius:20px;padding:20px 20px 28px;}
+.ach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px;}
+.ach-card{border:0.5px solid #2a2a2a;border-radius:14px;padding:14px 8px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;cursor:pointer;transition:border-color .15s;}
+.ach-card:hover{border-color:#666;}
+.ach-card.unlocked{border:1.5px solid #d4a843;background:#1a1408;}
+.ach-card.unlocked.silver{border-color:#555;background:#141414;}
+.ach-card.locked{opacity:.3;}
+.ach-card-icon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;}
+.ach-card-pts{font-size:10px;font-weight:700;background:rgba(76,175,122,.12);color:#4caf7a;padding:2px 7px;border-radius:50px;}
+.ach-card-name{font-size:12px;font-weight:600;color:#f0f0f0;line-height:1.3;}
+.ach-card.locked .ach-card-name{color:#555;}
+.ach-group-lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#555;margin:14px 0 10px;}
+
+/* === PROFILE SCREEN (from макет 2) === */
+.fb-screen{display:none;}
+.fb-screen.active{display:block;}
+.fb-tap{cursor:pointer;transition:transform 0.1s, background 0.15s;}
+.fb-tap:active{transform:scale(0.98);}
+.fb-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);display:none;z-index:60;}
+.fb-overlay.active{display:block;}
+.fb-sheet{position:fixed;left:0;right:0;bottom:0;background:#1a1a1c;border-radius:24px 24px 0 0;padding:12px 20px calc(110px + env(safe-area-inset-bottom));z-index:61;display:none;max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:slideUp 0.25s ease-out;touch-action:pan-y;will-change:transform;}
+.fb-sheet.active{display:block;}
+.fb-sheet.dragging{transition:none;animation:none;}
+.fb-sheet.closing{animation:slideDown 0.22s ease-in forwards;}
+.fb-modal{position:fixed;left:16px;right:16px;top:50%;transform:translateY(-50%);background:#1a1a1c;border-radius:20px;padding:24px 20px;z-index:61;display:none;animation:fadeIn 0.2s ease-out;max-height:calc(100vh - 140px);overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.fb-modal.active{display:block;}
+.fb-handle{width:36px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 20px;cursor:grab;}
+.fb-handle:active{cursor:grabbing;}
+.fb-sheet-grab{padding:8px 20px 0;margin:-12px -20px 0;cursor:grab;}
+.fb-sheet-grab:active{cursor:grabbing;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+@keyframes slideDown{from{transform:translateY(0);}to{transform:translateY(100%);}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-50%) scale(0.95);}to{opacity:1;transform:translateY(-50%) scale(1);}}
+.color-dot,.color-dot-2{cursor:pointer;}
+.color-dot.selected,.color-dot-2.selected{border:2px solid #fff;box-sizing:border-box;}
+.profile-pad{padding:20px 16px 0;}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+<!-- ===================== RATING SCREEN ===================== -->
+<div class="screen active" id="screen-rating">
+  <div class="wrap">
+
+    <!-- HERO -->
+    <div class="hero">
+      <img class="artist" src="data:image/jpeg;base64,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" alt="Пётр Елфимов"/>
+      <div class="hero-grad-h"></div>
+      <div class="hero-grad-v"></div>
+      <div class="hero-logo">Fan<span>base</span></div>
+      <div class="hero-content fade-up">
+        <div style="height:52px;"></div>
+        <div class="hero-name">Пётр<br>Елфимов</div>
+        <div class="hero-text" style="max-width:200px;">
+          Музыка, которая объединяет. Ты — часть общего движения. Поддерживай, получай баллы и открывай эксклюзивный доступ только для близкого круга.
+        </div>
+        <div style="display:flex;align-items:center;">
+          <div class="avatars">
+            <div class="av" style="background:#5a7a6a;color:#c8e0d2;">АК</div>
+            <div class="av" style="background:#3a3a6a;color:#b0b0e0;margin-left:-8px;">МГ</div>
+            <div class="av" style="background:#6a5a7a;color:#c8b8e0;margin-left:-8px;">ЛВ</div>
+            <div class="av" style="background:#2a3a3a;color:#7ab8c8;margin-left:-8px;">СМ</div>
+            <div class="av" style="background:#2a3030;color:#80c0b0;margin-left:-8px;">НЛ</div>
+          </div>
+          <div class="sp-text"><strong>247</strong> фанатов в круге</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIZES -->
+    <div style="border-bottom:1px solid #1a1a1a;">
+      <div style="padding:18px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="togglePrizes()">
+        <div class="lbl" style="margin-bottom:0;">Что тебя ждёт</div>
+        <i id="prizes-chevron" class="ti ti-chevron-down" style="font-size:18px;color:#777;transition:transform .25s ease;display:inline-block;line-height:1;" aria-hidden="true"></i>
+      </div>
+      <div id="prizes-body" style="padding:0 16px 16px;display:flex;flex-direction:column;gap:6px;">
+        <div style="background:linear-gradient(to right,rgba(212,168,67,.18) 0%,rgba(212,168,67,.04) 60%,transparent 100%);border:0.5px solid rgba(212,168,67,.25);border-radius:14px;padding:14px 18px;display:flex;align-items:center;min-height:64px;">
+          <span style="font-size:13px;color:#d4a843;padding:4px 0;border-radius:8px;white-space:nowrap;width:64px;text-align:center;flex-shrink:0;display:block;border:0.5px solid rgba(212,168,67,.4);">Топ-3</span>
+          <div style="width:0.5px;height:28px;background:rgba(212,168,67,.3);flex-shrink:0;margin:0 16px;"></div>
+          <p style="font-size:13px;color:#ccc;margin:0;line-height:1.5;">Онлайн-встреча раз в месяц, приглашение на закрытый саундчек, личная благодарность со сцены</p>
+        </div>
+        <div style="background:linear-gradient(to right,rgba(74,128,196,.18) 0%,rgba(74,128,196,.04) 60%,transparent 100%);border:0.5px solid rgba(74,128,196,.25);border-radius:14px;padding:14px 18px;display:flex;align-items:center;min-height:64px;">
+          <span style="font-size:13px;color:#4a80c4;padding:4px 0;border-radius:8px;white-space:nowrap;width:64px;text-align:center;flex-shrink:0;display:block;border:0.5px solid rgba(74,128,196,.4);">Топ-10</span>
+          <div style="width:0.5px;height:28px;background:rgba(74,128,196,.3);flex-shrink:0;margin:0 16px;"></div>
+          <p style="font-size:13px;color:#ccc;margin:0;line-height:1.5;">Закрытый стрим, meet &amp; greet после концерта, сниппеты демо и новых треков до релиза</p>
+        </div>
+        <div style="background:linear-gradient(to right,rgba(76,175,122,.18) 0%,rgba(76,175,122,.04) 60%,transparent 100%);border:0.5px solid rgba(76,175,122,.25);border-radius:14px;padding:14px 18px;display:flex;align-items:center;min-height:64px;">
+          <span style="font-size:13px;color:#4caf7a;padding:4px 0;border-radius:8px;white-space:nowrap;width:64px;text-align:center;flex-shrink:0;display:block;border:0.5px solid rgba(76,175,122,.4);">Топ-30</span>
+          <div style="width:0.5px;height:28px;background:rgba(76,175,122,.3);flex-shrink:0;margin:0 16px;"></div>
+          <p style="font-size:13px;color:#ccc;margin:0;line-height:1.5;">Ранний доступ к билетам, скидка 10% на мерч, эксклюзивные концерты</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div style="padding:16px 16px 0;display:flex;align-items:center;justify-content:space-between;">
+      <div class="lbl" style="margin-bottom:0;">Лидеры</div>
+      <a class="more-link" onclick="openRules()">Правила →</a>
+    </div>
+    <div class="tabs" style="margin-top:10px;">
+      <div class="tab active" id="tab-week" onclick="switchTab('week')">Эта неделя</div>
+      <div class="tab" id="tab-legends" onclick="switchTab('legends')">Легенды</div>
+      <div class="tab-hint" id="tab-hint">обновляется еженедельно</div>
+    </div>
+    <div class="podium" id="podium"></div>
+    <div id="list-rows"></div>
+    <div style="padding:10px 16px;text-align:right;border-bottom:1px solid #1a1a1a;">
+      <a class="more-link" id="show-more-btn" onclick="toggleExpanded()">Показать всех ∨</a>
+    </div>
+
+    <!-- NEXT RANK -->
+    <div style="padding:14px 16px;">
+      <div class="next-rank" onclick="goProfile()">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+          <div>
+            <div class="nr-lbl">Твоё место</div>
+            <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px;">
+              <span style="font-family:'Unbounded',sans-serif;font-size:36px;font-weight:700;color:#d4a843;line-height:1;">#12</span>
+              <span style="font-size:13px;color:#555;">из 247</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:24px;height:24px;border-radius:50%;background:#282830;border:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:8px;font-weight:700;color:#9090d0;flex-shrink:0;">ИС</div>
+              <p style="font-size:12px;color:#666;margin:0;">ещё <span style="color:#d4a843;font-weight:600;">445 баллов</span> до #11 · @ivan_sound</p>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div class="nr-lbl">Счёт</div>
+            <span style="font-family:'Unbounded',sans-serif;font-size:22px;font-weight:700;color:#f0f0f0;line-height:1;">3 876</span>
+            <p style="font-size:11px;color:#555;margin:4px 0 0;">баллов</p>
+          </div>
+        </div>
+        <div class="prog-bg"><div class="prog-fill" style="width:90%;"></div></div>
+      </div>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- ACHIEVEMENTS preview -->
+    <div style="padding:16px 16px 0;display:flex;align-items:center;justify-content:space-between;">
+      <div class="lbl" style="margin-bottom:0;">Твои достижения</div>
+      <a class="more-link" onclick="goProfile()">Все →</a>
+    </div>
+    <div style="height:10px;"></div>
+    <div class="ach-row" onclick="goProfile()">
+      <div class="ach-ico" style="background:#0d2018;">💬</div>
+      <div style="flex:1;"><div class="ach-name">Голос толпы</div><div class="ach-bar-bg"><div class="ach-bar" style="width:82%;background:#4caf7a;"></div></div><div class="ach-prog">41 / 50 комментариев</div></div>
+      <div class="ach-pts">+100 бал.</div>
+    </div>
+    <div class="ach-row" onclick="goProfile()">
+      <div class="ach-ico" style="background:#2a1e08;">🔥</div>
+      <div style="flex:1;"><div class="ach-name">Верный фан</div><div class="ach-bar-bg"><div class="ach-bar" style="width:57%;background:#d4a843;"></div></div><div class="ach-prog">4 / 7 дней подряд</div></div>
+      <div class="ach-pts">+150 бал.</div>
+    </div>
+    <div class="ach-row" style="border-bottom:none;" onclick="goProfile()">
+      <div class="ach-ico" style="background:#1a1a1a;">🦕</div>
+      <div style="flex:1;"><div class="ach-name">Мерчезавр</div><div class="ach-bar-bg"><div class="ach-bar" style="width:20%;background:#444;"></div></div><div class="ach-prog">2 / 10 фото</div></div>
+      <div class="ach-pts">+200 бал.</div>
+    </div>
+    <div style="padding:8px 16px 14px;text-align:right;">
+      <a class="more-link" onclick="goProfile()">Все достижения →</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== PROFILE SCREEN ===================== -->
+<div class="screen" id="screen-profile">
+  <div class="fb-screen active" id="fb-screen-main" style="padding:20px 16px 0;">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div style="font-family:'Unbounded',sans-serif;font-size:18px;font-weight:700;letter-spacing:.04em;"><span style="color:#fff;">Fan</span><span style="color:#E9B949;">base</span></div>
+      <button class="fb-tap" id="btn-settings" style="background:transparent;border:0.5px solid rgba(255,255,255,0.12);width:36px;height:36px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;padding:0;" aria-label="Настройки">
+        <i class="ti ti-settings" style="font-size:18px;"></i>
+      </button>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+      <div class="fb-tap" id="btn-avatar" style="position:relative;width:64px;height:64px;flex-shrink:0;">
+        <div id="main-avatar-circle" style="width:64px;height:64px;border-radius:50%;background:#E9B949;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:20px;color:#2a1f0a;">МЕ</div>
+        <div style="position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;border-radius:50%;background:#1a1a1c;border:2px solid #0f0f10;display:flex;align-items:center;justify-content:center;">
+          <i class="ti ti-pencil" style="font-size:11px;color:#E9B949;"></i>
+        </div>
+      </div>
+      <div style="min-width:0;">
+        <div style="font-size:16px;font-weight:500;margin-bottom:2px;">@max_elfimov_fan</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:6px;">
+          <i class="ti ti-calendar" style="font-size:12px;"></i>
+          Фан с марта 2024
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#1a1a1c;border-radius:16px;padding:16px;margin-bottom:24px;display:flex;align-items:center;">
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:22px;font-weight:500;color:#E9B949;line-height:1.1;font-family:'Unbounded',sans-serif;">#12</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">место</div>
+      </div>
+      <div style="width:0.5px;height:32px;background:rgba(255,255,255,0.08);"></div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:22px;font-weight:500;line-height:1.1;font-family:'Unbounded',sans-serif;">3 876</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">баллов</div>
+      </div>
+      <div style="width:0.5px;height:32px;background:rgba(255,255,255,0.08);"></div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:22px;font-weight:500;line-height:1.1;font-family:'Unbounded',sans-serif;">3<span style="color:rgba(255,255,255,0.4);">/12</span></div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">ачивки</div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="font-size:11px;font-weight:500;letter-spacing:1px;color:rgba(255,255,255,0.4);text-transform:uppercase;">В процессе · 3</div>
+      <button class="fb-tap" id="toggle-progress" style="background:transparent;border:none;color:rgba(255,255,255,0.5);font-size:12px;display:flex;align-items:center;gap:4px;padding:4px;font-family:inherit;">
+        <span>Показать все</span>
+        <i class="ti ti-chevron-right" style="font-size:14px;"></i>
+      </button>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
+      <div class="fb-tap achievement-card" data-ach="voice" style="background:#1a1a1c;border-radius:14px;padding:12px;display:flex;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(29,158,117,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="ti ti-message-2" style="font-size:22px;color:#1D9E75;"></i>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+            <div style="font-size:14px;font-weight:500;">Голос толпы</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);">41<span style="color:rgba(255,255,255,0.3);">/50</span></div>
+          </div>
+          <div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;">
+            <div style="width:82%;height:100%;background:#1D9E75;border-radius:3px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fb-tap progress-extra achievement-card" data-ach="star" style="display:none;background:#1a1a1c;border-radius:14px;padding:12px;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(233,185,73,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="ti ti-star" style="font-size:22px;color:#E9B949;"></i>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+            <div style="font-size:14px;font-weight:500;">Звёздный час</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);">7<span style="color:rgba(255,255,255,0.3);">/10</span></div>
+          </div>
+          <div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;">
+            <div style="width:70%;height:100%;background:#E9B949;border-radius:3px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fb-tap progress-extra achievement-card" data-ach="flame" style="display:none;background:#1a1a1c;border-radius:14px;padding:12px;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(216,90,48,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="ti ti-flame" style="font-size:22px;color:#D85A30;"></i>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+            <div style="font-size:14px;font-weight:500;">Огонь стрик</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);">12<span style="color:rgba(255,255,255,0.3);">/30</span></div>
+          </div>
+          <div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;">
+            <div style="width:40%;height:100%;background:#D85A30;border-radius:3px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="font-size:11px;font-weight:500;letter-spacing:1px;color:rgba(255,255,255,0.4);text-transform:uppercase;">Получены · 3</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:24px;">
+      <div class="fb-tap achievement-card" data-ach="loyal" style="background:#1a1a1c;border-radius:14px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;">
+        <div style="position:absolute;top:8px;right:8px;width:14px;height:14px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;">
+          <i class="ti ti-check" style="font-size:9px;color:#fff;"></i>
+        </div>
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(216,90,48,0.15);display:flex;align-items:center;justify-content:center;margin-bottom:8px;">
+          <i class="ti ti-flame" style="font-size:22px;color:#D85A30;"></i>
+        </div>
+        <div style="font-size:12px;font-weight:500;margin-bottom:2px;line-height:1.2;">Верный фан</div>
+        <div style="font-size:11px;color:#E9B949;">+150</div>
+      </div>
+      <div class="fb-tap achievement-card" data-ach="patron" style="background:#1a1a1c;border-radius:14px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;">
+        <div style="position:absolute;top:8px;right:8px;width:14px;height:14px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;">
+          <i class="ti ti-check" style="font-size:9px;color:#fff;"></i>
+        </div>
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(233,185,73,0.15);display:flex;align-items:center;justify-content:center;margin-bottom:8px;">
+          <i class="ti ti-diamond" style="font-size:22px;color:#E9B949;"></i>
+        </div>
+        <div style="font-size:12px;font-weight:500;margin-bottom:2px;line-height:1.2;">Меценат</div>
+        <div style="font-size:11px;color:#E9B949;">+300</div>
+      </div>
+      <div class="fb-tap achievement-card" data-ach="liker" style="background:#1a1a1c;border-radius:14px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;">
+        <div style="position:absolute;top:8px;right:8px;width:14px;height:14px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;">
+          <i class="ti ti-check" style="font-size:9px;color:#fff;"></i>
+        </div>
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(29,158,117,0.15);display:flex;align-items:center;justify-content:center;margin-bottom:8px;">
+          <i class="ti ti-thumb-up" style="font-size:22px;color:#1D9E75;"></i>
+        </div>
+        <div style="font-size:12px;font-weight:500;margin-bottom:2px;line-height:1.2;">Лайкомёт</div>
+        <div style="font-size:11px;color:#E9B949;">+100</div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="font-size:11px;font-weight:500;letter-spacing:1px;color:rgba(255,255,255,0.4);text-transform:uppercase;">Не открыты · 6</div>
+      <button class="fb-tap" id="toggle-locked" style="background:transparent;border:none;color:rgba(255,255,255,0.5);font-size:12px;display:flex;align-items:center;gap:4px;padding:4px;font-family:inherit;">
+        <span>Показать все</span>
+        <i class="ti ti-chevron-right" style="font-size:14px;"></i>
+      </button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:28px;">
+      <div class="fb-tap achievement-card" data-ach="legend" style="background:#1a1a1c;border-radius:14px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;text-align:center;">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;margin-bottom:8px;">
+          <i class="ti ti-crown" style="font-size:22px;color:rgba(255,255,255,0.35);"></i>
+        </div>
+        <div style="font-size:12px;font-weight:500;margin-bottom:2px;line-height:1.2;color:rgba(255,255,255,0.5);">Легенда</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.3);">+500</div>
+      </div>
+      <div class="fb-tap achievement-card" data-ach="marathon" style="background:#1a1a1c;border-radius:14px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;text-align:center;">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;margin-bottom:8px;">
+          <i class="ti ti-run" style="font-size:22px;color:rgba(255,255,255,0.35);"></i>
+        </div>
+        <div style="font-size:12px;font-weight:500;margin-bottom:2px;line-height:1.2;color:rgba(255,255,255,0.5);">Марафон</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.3);">+250</div>
+      </div>
+      <div class="fb-tap achievement-card" data-ach="first" style="background:#1a1a1c;border-radius:14px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;text-align:center;">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;margin-bottom:8px;">
+          <i class="ti ti-medal" style="font-size:22px;color:rgba(255,255,255,0.35);"></i>
+        </div>
+        <div style="font-size:12px;font-weight:500;margin-bottom:2px;line-height:1.2;color:rgba(255,255,255,0.5);">Первый</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.3);">+200</div>
+      </div>
+      <div class="fb-tap locked-extra achievement-card" data-ach="hype" style="display:none;background:#1a1a1c;border-radius:14px;padding:12px 8px;flex-direction:column;align-items:center;text-align:center;">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;margin-bottom:8px;">
+          <i class="ti ti-bolt" style="font-size:22px;color:rgba(255,255,255,0.35);"></i>
+        </div>
+        <div style="font-size:12px;font-weight:500;margin-bottom:2px;line-height:1.2;color:rgba(255,255,255,0.5);">Хайп</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.3);">+180</div>
+      </div>
+      <div class="fb-tap locked-extra achievement-card" data-ach="sharp" style="display:none;background:#1a1a1c;border-radius:14px;padding:12px 8px;flex-direction:column;align-items:center;text-align:center;">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;margin-bottom:8px;">
+          <i class="ti ti-eye" style="font-size:22px;color:rgba(255,255,255,0.35);"></i>
+        </div>
+        <div style="font-size:12px;font-weight:500;margin-bottom:2px;line-height:1.2;color:rgba(255,255,255,0.5);">Зоркий</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.3);">+120</div>
+      </div>
+      <div class="fb-tap locked-extra achievement-card" data-ach="start" style="display:none;background:#1a1a1c;border-radius:14px;padding:12px 8px;flex-direction:column;align-items:center;text-align:center;">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;margin-bottom:8px;">
+          <i class="ti ti-rocket" style="font-size:22px;color:rgba(255,255,255,0.35);"></i>
+        </div>
+        <div style="font-size:12px;font-weight:500;margin-bottom:2px;line-height:1.2;color:rgba(255,255,255,0.5);">Старт</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.3);">+100</div>
+      </div>
+    </div>
+
+    <!-- avatar modal anchored inside main profile -->
+    <div class="fb-overlay" id="overlay-main"></div>
+    <div class="fb-sheet" id="sheet-achievement">
+      <div class="fb-sheet-grab"><div class="fb-handle"></div></div>
+      <button class="fb-tap close-sheet" style="position:absolute;top:18px;right:16px;background:rgba(255,255,255,0.06);border:none;width:30px;height:30px;border-radius:50%;color:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;z-index:2;">
+        <i class="ti ti-x" style="font-size:16px;"></i>
+      </button>
+      <div style="display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:20px;">
+        <div id="ach-icon-wrap" style="width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:14px;border:1px solid transparent;">
+          <i id="ach-icon" class="ti ti-message-2" style="font-size:36px;"></i>
+        </div>
+        <div id="ach-title" style="font-size:20px;font-weight:500;color:#fff;margin-bottom:4px;">Голос толпы</div>
+        <div id="ach-desc" style="font-size:13px;color:rgba(255,255,255,0.55);max-width:280px;line-height:1.4;">Оставь 50 комментариев под постами в VK</div>
+      </div>
+      <div id="ach-progress-card" style="background:rgba(255,255,255,0.04);border-radius:14px;padding:14px;margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;">
+          <div style="font-size:13px;color:rgba(255,255,255,0.6);">Прогресс</div>
+          <div style="font-size:14px;font-weight:500;color:#fff;"><span id="ach-curr">41</span><span style="color:rgba(255,255,255,0.4);">/<span id="ach-total">50</span></span></div>
+        </div>
+        <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;margin-bottom:10px;">
+          <div id="ach-bar" style="width:82%;height:100%;border-radius:4px;"></div>
+        </div>
+        <div id="ach-remain" style="font-size:12px;color:rgba(255,255,255,0.5);">Осталось 9 комментариев</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;background:rgba(233,185,73,0.08);border:0.5px solid rgba(233,185,73,0.2);border-radius:14px;padding:12px 14px;">
+        <i class="ti ti-gift" style="font-size:22px;color:#E9B949;"></i>
+        <div style="flex:1;">
+          <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:2px;">Награда</div>
+          <div style="font-size:14px;font-weight:500;color:#E9B949;">+<span id="ach-reward">200</span> баллов</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fb-modal" id="modal-avatar">
+      <button class="fb-tap close-modal" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.06);border:none;width:28px;height:28px;border-radius:50%;color:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">
+        <i class="ti ti-x" style="font-size:15px;"></i>
+      </button>
+      <div style="font-size:16px;font-weight:500;color:#fff;text-align:center;margin-bottom:20px;">Аватар</div>
+      <div style="display:flex;justify-content:center;margin-bottom:20px;">
+        <div id="modal-avatar-preview" style="width:96px;height:96px;border-radius:50%;background:#E9B949;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:30px;color:#2a1f0a;">МЕ</div>
+      </div>
+      <div id="color-section">
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:10px;">Цвет фона</div>
+        <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;" id="color-palette">
+          <div class="color-dot selected" data-color="#E9B949" style="width:36px;height:36px;border-radius:50%;background:#E9B949;"></div>
+          <div class="color-dot" data-color="#D85A30" style="width:36px;height:36px;border-radius:50%;background:#D85A30;"></div>
+          <div class="color-dot" data-color="#1D9E75" style="width:36px;height:36px;border-radius:50%;background:#1D9E75;"></div>
+          <div class="color-dot" data-color="#7F77DD" style="width:36px;height:36px;border-radius:50%;background:#7F77DD;"></div>
+          <div class="color-dot" data-color="#D4537E" style="width:36px;height:36px;border-radius:50%;background:#D4537E;"></div>
+          <div class="color-dot" data-color="#378ADD" style="width:36px;height:36px;border-radius:50%;background:#378ADD;"></div>
+          <div class="color-dot" data-color="#888780" style="width:36px;height:36px;border-radius:50%;background:#888780;"></div>
+        </div>
+      </div>
+      <div id="avatar-actions">
+        <button class="fb-tap" id="btn-upload" style="width:100%;background:#E9B949;border:none;color:#2a1f0a;font-size:14px;font-weight:500;padding:12px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;">
+          <i class="ti ti-upload" style="font-size:18px;"></i>
+          <span id="upload-label">Загрузить фото</span>
+        </button>
+        <button class="fb-tap" id="btn-delete-photo" style="display:none;width:100%;background:transparent;border:0.5px solid rgba(226,75,74,0.4);color:#E24B4A;font-size:14px;padding:12px;border-radius:12px;align-items:center;justify-content:center;gap:8px;margin-top:8px;font-family:inherit;">
+          <i class="ti ti-trash" style="font-size:16px;"></i>
+          Удалить фото
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS SUBSCREEN -->
+  <div class="fb-screen" id="fb-screen-settings" style="padding:20px 16px 24px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+      <button class="fb-tap" id="btn-back" style="background:transparent;border:0.5px solid rgba(255,255,255,0.12);width:36px;height:36px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;padding:0;" aria-label="Назад">
+        <i class="ti ti-arrow-left" style="font-size:18px;"></i>
+      </button>
+      <div style="font-size:16px;font-weight:500;color:#fff;">Настройки</div>
+      <div style="width:36px;"></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;">
+      <div class="fb-tap" id="btn-avatar-settings" style="position:relative;width:84px;height:84px;margin-bottom:10px;">
+        <div id="settings-avatar-circle" style="width:84px;height:84px;border-radius:50%;background:#E9B949;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:26px;color:#2a1f0a;">МЕ</div>
+        <div style="position:absolute;bottom:-2px;right:-2px;width:28px;height:28px;border-radius:50%;background:#1a1a1c;border:2px solid #0f0f10;display:flex;align-items:center;justify-content:center;">
+          <i class="ti ti-pencil" style="font-size:13px;color:#E9B949;"></i>
+        </div>
+      </div>
+      <button class="fb-tap" id="btn-avatar-link" style="background:transparent;border:none;color:#E9B949;font-size:13px;font-family:inherit;cursor:pointer;">Изменить аватар</button>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:24px;">
+      <div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:6px;">Никнейм</div>
+        <div style="background:#1a1a1c;border:0.5px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 14px;font-size:14px;color:#fff;display:flex;align-items:center;gap:6px;">
+          <span style="color:rgba(255,255,255,0.4);">@</span>max_elfimov_fan
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:6px;">Имя</div>
+        <div style="background:#1a1a1c;border:0.5px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 14px;font-size:14px;color:#fff;">Максим</div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:6px;">О себе</div>
+        <div style="background:#1a1a1c;border:0.5px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 14px;font-size:14px;color:rgba(255,255,255,0.4);min-height:60px;">Расскажи о себе…</div>
+      </div>
+    </div>
+
+    <div style="font-size:11px;font-weight:500;letter-spacing:1px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:10px;">Приватность</div>
+    <div style="background:#1a1a1c;border-radius:14px;padding:4px 14px;margin-bottom:24px;">
+      <div class="fb-tap toggle-row" data-toggle="anon" style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:0.5px solid rgba(255,255,255,0.06);gap:12px;">
+        <div style="min-width:0;">
+          <div style="font-size:14px;color:#fff;">Сделать профиль анонимным</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);margin-top:2px;">Другие не будут видеть твоё фото и имя</div>
+        </div>
+        <div class="toggle-switch" data-on="false" style="width:38px;height:22px;background:rgba(255,255,255,0.12);border-radius:11px;position:relative;flex-shrink:0;transition:background 0.2s;">
+          <div class="toggle-thumb" style="position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left 0.2s, right 0.2s;"></div>
+        </div>
+      </div>
+      <div class="fb-tap toggle-row" data-toggle="notif" style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;gap:12px;">
+        <div style="min-width:0;">
+          <div style="font-size:14px;color:#fff;">Уведомления</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.45);margin-top:2px;">О новых ачивках и баллах</div>
+        </div>
+        <div class="toggle-switch" data-on="false" style="width:38px;height:22px;background:rgba(255,255,255,0.12);border-radius:11px;position:relative;flex-shrink:0;transition:background 0.2s;">
+          <div class="toggle-thumb" style="position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left 0.2s, right 0.2s;"></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="fb-tap" style="width:100%;background:transparent;border:0.5px solid rgba(226,75,74,0.4);color:#E24B4A;font-size:14px;padding:12px;border-radius:12px;margin-bottom:8px;font-family:inherit;cursor:pointer;">Выйти</button>
+    <button class="fb-tap" style="width:100%;background:transparent;border:none;color:rgba(255,255,255,0.4);font-size:12px;padding:8px;font-family:inherit;cursor:pointer;">Удалить аккаунт</button>
+
+    <div class="fb-overlay" id="overlay-settings"></div>
+    <div class="fb-modal" id="modal-avatar-settings">
+      <button class="fb-tap close-modal-settings" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.06);border:none;width:28px;height:28px;border-radius:50%;color:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;">
+        <i class="ti ti-x" style="font-size:15px;"></i>
+      </button>
+      <div style="font-size:16px;font-weight:500;color:#fff;text-align:center;margin-bottom:20px;">Аватар</div>
+      <div style="display:flex;justify-content:center;margin-bottom:20px;">
+        <div id="modal-avatar-preview-2" style="width:96px;height:96px;border-radius:50%;background:#E9B949;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:30px;color:#2a1f0a;">МЕ</div>
+      </div>
+      <div id="color-section-2">
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:10px;">Цвет фона</div>
+        <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;" id="color-palette-2">
+          <div class="color-dot-2 selected" data-color="#E9B949" style="width:36px;height:36px;border-radius:50%;background:#E9B949;"></div>
+          <div class="color-dot-2" data-color="#D85A30" style="width:36px;height:36px;border-radius:50%;background:#D85A30;"></div>
+          <div class="color-dot-2" data-color="#1D9E75" style="width:36px;height:36px;border-radius:50%;background:#1D9E75;"></div>
+          <div class="color-dot-2" data-color="#7F77DD" style="width:36px;height:36px;border-radius:50%;background:#7F77DD;"></div>
+          <div class="color-dot-2" data-color="#D4537E" style="width:36px;height:36px;border-radius:50%;background:#D4537E;"></div>
+          <div class="color-dot-2" data-color="#378ADD" style="width:36px;height:36px;border-radius:50%;background:#378ADD;"></div>
+          <div class="color-dot-2" data-color="#888780" style="width:36px;height:36px;border-radius:50%;background:#888780;"></div>
+        </div>
+      </div>
+      <button class="fb-tap" id="btn-upload-2" style="width:100%;background:#E9B949;border:none;color:#2a1f0a;font-size:14px;font-weight:500;padding:12px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;">
+        <i class="ti ti-upload" style="font-size:18px;"></i>
+        <span id="upload-label-2">Загрузить фото</span>
+      </button>
+      <button class="fb-tap" id="btn-delete-photo-2" style="display:none;width:100%;background:transparent;border:0.5px solid rgba(226,75,74,0.4);color:#E24B4A;font-size:14px;padding:12px;border-radius:12px;align-items:center;justify-content:center;gap:8px;margin-top:8px;font-family:inherit;">
+        <i class="ti ti-trash" style="font-size:16px;"></i>
+        Удалить фото
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== TABBAR ===================== -->
+<div class="tabbar-outer">
+  <div class="tabbar">
+    <button class="tb-item active" id="nav-rating" onclick="navTo('rating')">
+      <span class="tb-icon">🏆</span>
+      <div class="tb-lbl">Рейтинг</div>
+    </button>
+    <button class="tb-cta-slot" onclick="openSupport()" aria-label="Поддержать артиста">
+      <div class="tb-cta-wrap">
+        <div class="tb-cta-glow" aria-hidden="true"></div>
+        <div class="tb-cta-btn">
+          <div class="tb-cta-shine" aria-hidden="true"></div>
+          <svg class="tb-cta-bolt" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+            <path d="M13 2 L4 14 L11 14 L10 22 L20 9 L13 9 Z" fill="#3a2a08" stroke="#3a2a08" stroke-width="1.4" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tb-cta-lbl">Поддержать</div>
+    </button>
+    <button class="tb-item profile-tab" id="nav-profile" onclick="navTo('profile')">
+      <div class="tb-av">
+        <div class="tb-av-rank">#12</div>
+      </div>
+      <div class="tb-lbl">Профиль</div>
+    </button>
+  </div>
+</div>
+
+<!-- ===================== RULES MODAL ===================== -->
+<div class="modal-overlay" id="rules-modal">
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1.5rem; max-width: 420px; margin: 0 auto;">
+    <h2 class="sr-only">Правила баллов</h2>
+
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+      <div>
+        <div style="font-family:'Unbounded',sans-serif; font-size: 17px; font-weight: 700; color: var(--color-text-primary); margin-bottom: 4px;">Правила баллов</div>
+        <div style="font-size: 13px; color: var(--color-text-secondary);">Как получать и что влияет на счёт</div>
+      </div>
+      <button id="close-rules" aria-label="Закрыть" style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer;">
+        <i class="ti ti-x" style="font-size: 16px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- Earning section -->
+    <div style="font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); letter-spacing: 0.08em; margin-bottom: 10px;">НАЧИСЛЕНИЕ</div>
+
+    <div style="background: var(--color-background-primary); border-radius: var(--border-radius-lg); border: 0.5px solid var(--color-border-tertiary); overflow: hidden; margin-bottom: 1.5rem;">
+      <!-- Column header -->
+      <div style="display: grid; grid-template-columns: 1fr 80px; padding: 10px 16px; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 11px; color: var(--color-text-tertiary); background: var(--color-background-secondary);">
+        <div>Действие</div>
+        <div style="text-align: right;">Баллы</div>
+      </div>
+
+      <!-- Like row -->
+      <div style="display: grid; grid-template-columns: 1fr 80px; padding: 12px 16px; align-items: center; border-bottom: 0.5px solid var(--color-border-tertiary);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="c-blue" style="width: 28px; height: 28px; border-radius: var(--border-radius-md); background: var(--c-fill); display: flex; align-items: center; justify-content: center;">
+            <i class="ti ti-thumb-up" style="font-size: 15px; color: var(--c-stroke);" aria-hidden="true"></i>
+          </div>
+          <span style="font-size: 14px; color: var(--color-text-primary);">Лайк ВКонтакте</span>
+        </div>
+        <div style="text-align: right; font-size: 14px; font-weight: 500; color: var(--color-text-primary);">+5</div>
+      </div>
+
+      <!-- Comment row -->
+      <div style="display: grid; grid-template-columns: 1fr 80px; padding: 12px 16px; align-items: center; border-bottom: 0.5px solid var(--color-border-tertiary);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="c-teal" style="width: 28px; height: 28px; border-radius: var(--border-radius-md); background: var(--c-fill); display: flex; align-items: center; justify-content: center;">
+            <i class="ti ti-message" style="font-size: 15px; color: var(--c-stroke);" aria-hidden="true"></i>
+          </div>
+          <span style="font-size: 14px; color: var(--color-text-primary);">Комментарий</span>
+        </div>
+        <div style="text-align: right; font-size: 14px; font-weight: 500; color: var(--color-text-primary);">+15</div>
+      </div>
+
+      <!-- Repost row -->
+      <div style="display: grid; grid-template-columns: 1fr 80px; padding: 12px 16px; align-items: center; border-bottom: 0.5px solid var(--color-border-tertiary);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="c-purple" style="width: 28px; height: 28px; border-radius: var(--border-radius-md); background: var(--c-fill); display: flex; align-items: center; justify-content: center;">
+            <i class="ti ti-repeat" style="font-size: 15px; color: var(--c-stroke);" aria-hidden="true"></i>
+          </div>
+          <span style="font-size: 14px; color: var(--color-text-primary);">Репост</span>
+        </div>
+        <div style="text-align: right; font-size: 14px; font-weight: 500; color: var(--color-text-primary);">+25</div>
+      </div>
+
+      <!-- Merch row -->
+      <div style="display: grid; grid-template-columns: 1fr 80px; padding: 12px 16px; align-items: center; border-bottom: 0.5px solid var(--color-border-tertiary);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="c-amber" style="width: 28px; height: 28px; border-radius: var(--border-radius-md); background: var(--c-fill); display: flex; align-items: center; justify-content: center;">
+            <i class="ti ti-ticket" style="font-size: 15px; color: var(--c-stroke);" aria-hidden="true"></i>
+          </div>
+          <span style="font-size: 14px; color: var(--color-text-primary);">Мерч или билет</span>
+        </div>
+        <div style="text-align: right; font-size: 14px; font-weight: 500; color: var(--color-text-primary);">+300</div>
+      </div>
+
+      <!-- Donate row -->
+      <div style="display: grid; grid-template-columns: 1fr 80px; padding: 12px 16px; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="c-pink" style="width: 28px; height: 28px; border-radius: var(--border-radius-md); background: var(--c-fill); display: flex; align-items: center; justify-content: center;">
+            <i class="ti ti-diamond" style="font-size: 15px; color: var(--c-stroke);" aria-hidden="true"></i>
+          </div>
+          <div style="min-width:0;">
+            <div style="font-size: 14px; color: var(--color-text-primary);">Донат</div>
+            <div style="font-size: 11px; color: #4caf7a; margin-top:2px; font-weight:600;">×1.5 при сумме от 1 000 ₽</div>
+          </div>
+        </div>
+        <div style="text-align: right; font-size: 14px; font-weight: 500; color: var(--color-text-primary);">1 ₽ = 1</div>
+      </div>
+    </div>
+
+    <!-- Important info -->
+    <div style="font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); letter-spacing: 0.08em; margin-bottom: 10px;">ВАЖНО ЗНАТЬ</div>
+
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; background: var(--color-background-primary); border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary);">
+        <i class="ti ti-arrow-back-up" style="font-size: 16px; color: var(--color-text-secondary); margin-top: 2px; flex-shrink: 0;" aria-hidden="true"></i>
+        <div style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.5;">Удаление лайка, комментария или репоста снимает добавленные баллы</div>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; background: var(--color-background-primary); border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary);">
+        <i class="ti ti-refresh" style="font-size: 16px; color: var(--color-text-secondary); margin-top: 2px; flex-shrink: 0;" aria-hidden="true"></i>
+        <div style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.5;">Рейтинг «Эта неделя» обновляется каждый понедельник в 00:00 МСК</div>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; background: var(--color-background-primary); border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary);">
+        <i class="ti ti-trophy" style="font-size: 16px; color: var(--color-text-secondary); margin-top: 2px; flex-shrink: 0;" aria-hidden="true"></i>
+        <div style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.5;">Рейтинг «Легенды» — накопительный, баллы не сгорают</div>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; background: var(--color-background-primary); border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary);">
+        <i class="ti ti-shield-x" style="font-size: 16px; color: var(--color-text-danger); margin-top: 2px; flex-shrink: 0;" aria-hidden="true"></i>
+        <div style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.5;">Накрутка и боты — блокировка аккаунта</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SUPPORT MODAL ===================== -->
+<div id="sup-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.92);overflow-y:auto;padding:24px 16px;">
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1.5rem; max-width: 420px; margin: 0 auto;">
+    <h2 class="sr-only">Поддержи артиста</h2>
+
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+      <div>
+        <div style="font-family:'Unbounded',sans-serif; font-size: 17px; font-weight: 700; color: var(--color-text-primary); margin-bottom: 4px;">Поддержи артиста</div>
+        <div style="font-size: 13px; color: var(--color-text-secondary);">Выбери удобный способ</div>
+      </div>
+      <button onclick="closeSupport()" aria-label="Закрыть" style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer;">
+        <i class="ti ti-x" style="font-size: 16px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- PRIMARY: Donate -->
+    <div class="sup-card-v2" id="donate-card-inner">
+      <div class="sc-head">
+        <div class="sc-ico c-pink"><i class="ti ti-diamond" style="font-size:17px;color:var(--c-stroke);" aria-hidden="true"></i></div>
+        <div class="sc-title">Донат</div>
+        <div class="sc-badge">1 ₽ = 1 балл</div>
+      </div>
+      <div class="sc-desc">От 1 000 ₽ — <span class="sc-accent">бонус ×1.5</span> к баллам</div>
+
+      <div class="sc-controls">
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px;">
+          <button class="amt-btn" data-val="200">200 ₽</button>
+          <button class="amt-btn" data-val="500">500 ₽</button>
+          <button class="amt-btn suggested" data-val="1000">1 000 ₽</button>
+          <button class="amt-btn" id="custom-amt-trigger" type="button">своя</button>
+        </div>
+        <div id="custom-amt-wrap" style="display:none;">
+          <input id="custom-amt" class="amt-input" type="number" inputmode="numeric" placeholder="Введи сумму, ₽" min="1" max="1000000"/>
+        </div>
+        <div id="donate-hint"></div>
+        <button class="sup-confirm-v2" id="donate-confirm" onclick="submitDonate()" disabled>Выбери сумму</button>
+      </div>
+    </div>
+
+    <!-- SECONDARY: Merch -->
+    <div class="sup-card-v2" id="merch-card-inner">
+      <div class="sc-head">
+        <div class="sc-ico c-amber"><i class="ti ti-ticket" style="font-size:17px;color:var(--c-stroke);" aria-hidden="true"></i></div>
+        <div class="sc-title">Мерч или билет</div>
+        <div class="sc-badge">+300 за фото</div>
+      </div>
+      <div class="sc-desc">Пришли фото купленного мерча или билета с концерта</div>
+
+      <div id="merch-file-row" class="file-pill" style="display:none;">
+        <i class="ti ti-photo" style="font-size:16px;color:var(--color-text-secondary);" aria-hidden="true"></i>
+        <span class="fp-name" id="merch-fname"></span>
+        <button class="fp-rm" id="merch-rm" aria-label="Удалить">×</button>
+      </div>
+      <button class="upload-btn" id="merch-zone" type="button">
+        <i class="ti ti-camera-plus" style="font-size:18px;" aria-hidden="true"></i>
+        Загрузить фото
+      </button>
+      <div class="upload-meta">
+        <i class="ti ti-clock" style="font-size:13px;" aria-hidden="true"></i>
+        Проверка до 24 часов
+      </div>
+      <button class="sup-confirm-v2" id="merch-confirm" onclick="submitMerch()" disabled style="margin-top:12px;">Сначала загрузи фото</button>
+    </div>
+
+    <!-- SECONDARY: Hashtag -->
+    <div class="sup-card-v2" id="hash-card-inner">
+      <div class="sc-head">
+        <div class="sc-ico c-purple"><i class="ti ti-hash" style="font-size:17px;color:var(--c-stroke);" aria-hidden="true"></i></div>
+        <div class="sc-title">Пост с хэштегом</div>
+        <div class="sc-badge">+75 за скрин</div>
+      </div>
+      <div class="sc-desc">Выложи пост или сторис в любой соцсети и пришли скрин</div>
+
+      <div class="hash-row">
+        <div class="hash-tag">#Елфимов</div>
+        <button class="copy-pill" id="copy-hash" aria-label="Скопировать">
+          <i class="ti ti-copy" style="font-size:13px;" aria-hidden="true"></i>
+          Копировать
+        </button>
+      </div>
+
+      <div id="hash-file-row" class="file-pill" style="display:none;">
+        <i class="ti ti-photo" style="font-size:16px;color:var(--color-text-secondary);" aria-hidden="true"></i>
+        <span class="fp-name" id="hash-fname"></span>
+        <button class="fp-rm" id="hash-rm" aria-label="Удалить">×</button>
+      </div>
+      <button class="upload-btn" id="hash-zone" type="button">
+        <i class="ti ti-photo-plus" style="font-size:18px;" aria-hidden="true"></i>
+        Загрузить скрин
+      </button>
+      <div class="upload-meta">
+        <i class="ti ti-clock" style="font-size:13px;" aria-hidden="true"></i>
+        Проверка до 24 часов
+      </div>
+      <button class="sup-confirm-v2" id="hash-confirm" onclick="submitHash()" disabled style="margin-top:12px;">Сначала загрузи скрин</button>
+    </div>
+
+    <!-- PASSIVE: VK -->
+    <div class="sup-card-v2" style="margin-bottom:0;">
+      <div class="sc-head">
+        <div class="sc-ico c-blue"><i class="ti ti-brand-vk" style="font-size:17px;color:var(--c-stroke);" aria-hidden="true"></i></div>
+        <div class="sc-title">Активность ВКонтакте</div>
+        <div class="sc-badge">авто</div>
+      </div>
+      <div class="sc-desc">Подключи аккаунт — баллы за лайки, комментарии и репосты начисляются автоматически</div>
+
+      <div style="display:flex;gap:6px;margin-bottom:12px;">
+        <div class="vk-metric">
+          <i class="ti ti-thumb-up" style="font-size:16px;color:var(--color-text-secondary);" aria-hidden="true"></i>
+          <div class="vm-val">+5</div>
+        </div>
+        <div class="vk-metric">
+          <i class="ti ti-message" style="font-size:16px;color:var(--color-text-secondary);" aria-hidden="true"></i>
+          <div class="vm-val">+15</div>
+        </div>
+        <div class="vk-metric">
+          <i class="ti ti-repeat" style="font-size:16px;color:var(--color-text-secondary);" aria-hidden="true"></i>
+          <div class="vm-val">+25</div>
+        </div>
+      </div>
+
+      <button class="connect-btn" id="vk-connect" type="button">
+        Подключить ВКонтакте
+        <i class="ti ti-arrow-right" style="font-size:15px;" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /.app -->
+<script>
+/* ===================== INLINE TABLER ICONS ===================== */
+/* Заменяем <i class="ti ti-NAME"> на inline SVG. Без CDN-зависимости. */
+const TABLER_PATHS = {
+  "arrow-left": '<path d="M5 12l14 0"/><path d="M5 12l6 6"/><path d="M5 12l6 -6"/>',
+  "bolt": '<path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/>',
+  "calendar": '<path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/><path d="M11 15h1"/><path d="M12 15v3"/>',
+  "check": '<path d="M5 12l5 5l10 -10"/>',
+  "chevron-right": '<path d="M9 6l6 6l-6 6"/>',
+  "chevron-down": '<path d="M6 9l6 6l6 -6"/>',
+  "crown": '<path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z"/>',
+  "diamond": '<path d="M6 4h12l3 5l-8.5 9.5a0.7 .7 0 0 1 -1 0l-8.5 -9.5z"/><path d="M12 4l3 5l-3 9l-3 -9z"/><path d="M3 9h18"/>',
+  "eye": '<path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"/><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6"/>',
+  "flame": '<path d="M12 12c2 -2.96 0 -7 -1 -8c0 3.038 -1.773 4.741 -3 6c-1.226 1.26 -2 3.24 -2 5a6 6 0 1 0 12 0c0 -1.532 -1.056 -3.94 -2 -5c-1.786 3 -2.791 3 -4 2z"/>',
+  "gift": '<path d="M3 8m0 1a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1z"/><path d="M12 8l0 13"/><path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 0 1 0 5"/>',
+  "medal": '<path d="M12 4v3m-4 -3v6m8 -6v6"/><path d="M12 17.75l-3.5 1.75l.5 -3.5l-2.5 -2.5l3.5 -.5l2 -3.5l2 3.5l3.5 .5l-2.5 2.5l.5 3.5z"/>',
+  "message-2": '<path d="M8 9h8"/><path d="M8 13h6"/><path d="M9 18h-3a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-3l-3 3l-3 -3z"/>',
+  "pencil": '<path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"/><path d="M13.5 6.5l4 4"/>',
+  "rocket": '<path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3"/><path d="M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3"/><path d="M15 9m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/>',
+  "run": '<path d="M13 4m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M4 17l5 1l.75 -1.5"/><path d="M15 21l0 -4l-4 -3l1 -6"/><path d="M7 12l0 -3l5 -1l3 3l3 1"/>',
+  "settings": '<path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"/><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/>',
+  "star": '<path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/>',
+  "thumb-up": '<path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 3 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3"/>',
+  "trash": '<path d="M4 7l16 0"/><path d="M10 11l0 6"/><path d="M14 11l0 6"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>',
+  "upload": '<path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"/><path d="M7 9l5 -5l5 5"/><path d="M12 4l0 12"/>',
+  "x": '<path d="M18 6l-12 12"/><path d="M6 6l12 12"/>',
+  "message": '<path d="M4 21v-13a3 3 0 0 1 3 -3h10a3 3 0 0 1 3 3v6a3 3 0 0 1 -3 3h-9l-4 4"/><path d="M8 9l8 0"/><path d="M8 13l6 0"/>',
+  "repeat": '<path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3"/><path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3"/>',
+  "ticket": '<path d="M15 5l0 2"/><path d="M15 11l0 2"/><path d="M15 17l0 2"/><path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2"/>',
+  "arrow-back-up": '<path d="M9 14l-4 -4l4 -4"/><path d="M5 10h11a4 4 0 1 1 0 8h-1"/>',
+  "refresh": '<path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"/><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"/>',
+  "trophy": '<path d="M8 21l8 0"/><path d="M12 17l0 4"/><path d="M7 4l10 0"/><path d="M17 4v8a5 5 0 0 1 -10 0v-8"/><path d="M5 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M19 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/>',
+  "shield-x": '<path d="M11.46 20.846a12 12 0 0 1 -7.96 -14.846a12 12 0 0 0 8.5 -3a12 12 0 0 0 8.5 3a12 12 0 0 1 -.09 7.06"/><path d="M22 22l-5 -5"/><path d="M17 22l5 -5"/>',
+  "camera-plus": '<path d="M5 7h1a2 2 0 0 0 2 -2a1 1 0 0 1 1 -1h3"/><path d="M14 20h-7a3 3 0 0 1 -3 -3v-7a3 3 0 0 1 3 -3h2"/><path d="M9 13a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/><path d="M16 19h6"/><path d="M19 16v6"/>',
+  "photo-plus": '<path d="M15 8h.01"/><path d="M12.5 21h-6.5a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v6.5"/><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l3.5 3.5"/><path d="M14 14l1 -1c.617 -.593 1.328 -.793 2.009 -.6"/><path d="M16 19h6"/><path d="M19 16v6"/>',
+  "clock": '<path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 7v5l3 3"/>',
+  "hash": '<path d="M5 9l14 0"/><path d="M5 15l14 0"/><path d="M11 4l-4 16"/><path d="M17 4l-4 16"/>',
+  "copy": '<path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z"/><path d="M4.012 16.737a2 2 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1"/>',
+  "arrow-right": '<path d="M5 12l14 0"/><path d="M13 18l6 -6"/><path d="M13 6l6 6"/>',
+  "brand-vk": '<path d="M14 19h-4a8 8 0 0 1 -8 -8v-5h4v5a4 4 0 0 0 4 4h0v-9h4v4.5l.03 0a4.531 4.531 0 0 0 3.97 -4.496h4l-.342 1.711a6.858 6.858 0 0 1 -3.658 4.789h0a6.50 6.50 0 0 1 4 6l0 .5h-4a4.53 4.53 0 0 0 -4 -4.5v4.5h0z"/>',
+  "photo": '<path d="M15 8h.01"/><path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12z"/><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5"/><path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3"/>',
+  "sparkles": '<path d="M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm0 -12a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm-7 12a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6z"/>',
+};
+
+function svgFor(name, sizePx){
+  const body = TABLER_PATHS[name] || '';
+  const s = sizePx || 24;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;">${body}</svg>`;
+}
+
+function renderIcons(root){
+  (root||document).querySelectorAll('i.ti').forEach(el=>{
+    if(el.dataset.rendered==='1') return;
+    let name = '';
+    el.classList.forEach(c=>{ if(c.startsWith('ti-')) name = c.slice(3); });
+    if(!name || !TABLER_PATHS[name]) return;
+    // вытянем font-size из инлайн-стиля, если задан
+    const fs = parseInt(el.style.fontSize) || 22;
+    el.innerHTML = svgFor(name, fs);
+    el.style.lineHeight = '1';
+    el.dataset.rendered = '1';
+  });
+}
+renderIcons(document);
+/* ============================================================ */
+
+
+const TOP3=[
+  {rank:2,handle:"@anna_krav",initials:"АК",score:7890,delta:5,bg:"#1a2a2a",tc:"#9ab8d4",border:"#2a3a4a",rc:"#9ab8d4"},
+  {rank:1,handle:"@max_petrov",initials:"МП",score:8765,delta:3,bg:"#2a1e08",tc:"#d4a843",border:"#d4a843",rc:"#d4a843",noEmoji:true},
+  {rank:3,handle:"@liza_vibe",initials:"ЛВ",score:5210,delta:-2,bg:"#1a1420",tc:"#b87d55",border:"#2a2030",rc:"#b87d55",noEmoji:true},
+];
+const LEGENDS_TOP3=[
+  {rank:2,handle:"@queen_bee",initials:"QB",score:142300,delta:2,bg:"#1a2a2a",tc:"#9ab8d4",border:"#2a3a4a",rc:"#9ab8d4"},
+  {rank:1,handle:"@legend_zero",initials:"LZ",score:198450,delta:null,bg:"#2a1e08",tc:"#d4a843",border:"#d4a843",rc:"#d4a843"},
+  {rank:3,handle:"@old_school_v",initials:"ОШ",score:117800,delta:-1,bg:"#1a1420",tc:"#b87d55",border:"#2a2030",rc:"#b87d55"},
+];
+const LIST=[
+  {rank:4, handle:"@sergey.music",initials:"СМ",score:8650,delta:7,   bg:"#2a3a3a",tc:"#7ab8c8"},
+  {rank:5, handle:"@alex_kdt",    initials:"AK",score:7980,delta:-4,  bg:"#3a2a2a",tc:"#e08080"},
+  {rank:6, handle:"@nastya_li",   initials:"НЛ",score:7210,delta:11,  bg:"#2a3030",tc:"#80c0b0"},
+  {rank:7, handle:"@dmitry_s",    initials:"DM",score:6540,delta:9,   bg:"#2a2a3a",tc:"#8090e0"},
+  {rank:8, handle:"@pavel.wav",   initials:"ПВ",score:5890,delta:-6,  bg:"#303028",tc:"#c0b870"},
+  {rank:9, handle:"@olya_see",    initials:"OP",score:5310,delta:null,bg:"#3a2a3a",tc:"#c080c0"},
+  {rank:10,handle:"@artem_first", initials:"АФ",score:4820,delta:6,   bg:"#283230",tc:"#70c0a0"},
+  {rank:11,handle:"@ivan_sound",  initials:"ИС",score:4321,delta:14,  bg:"#282830",tc:"#9090d0"},
+  {rank:12,handle:"@you",         initials:"МЕ",score:3876,delta:3,   bg:"#2e2820",tc:"#d4a843",isMe:true},
+  {rank:13,handle:"@masha_kino",  initials:"МК",score:3540,delta:-21, bg:"#2a3020",tc:"#90b060"},
+  {rank:14,handle:"@roman_djent", initials:"РД",score:3210,delta:9,   bg:"#302828",tc:"#d07070"},
+  {rank:15,handle:"@kate_night",  initials:"КН",score:2980,delta:null,bg:"#282838",tc:"#8080c0"},
+  {rank:16,handle:"@yulia_art",   initials:"ЮА",score:2760,delta:17,  bg:"#303020",tc:"#b0b060"},
+  {rank:17,handle:"@vadim_mix",   initials:"ВМ",score:2550,delta:-3,  bg:"#283038",tc:"#6090c0"},
+  {rank:18,handle:"@lena_rec",    initials:"ЛР",score:2340,delta:12,  bg:"#382028",tc:"#c06080"},
+  {rank:19,handle:"@nikita_vol",  initials:"НВ",score:2140,delta:null,bg:"#203030",tc:"#60b0a0"},
+  {rank:20,handle:"@olga_zen",    initials:"ОЗ",score:1960,delta:-8,  bg:"#302030",tc:"#b060b0"},
+  {rank:21,handle:"@dasha_pulse", initials:"ДП",score:1790,delta:19,  bg:"#203828",tc:"#60c080"},
+  {rank:22,handle:"@fedor_klass", initials:"ФК",score:1630,delta:29,  bg:"#383020",tc:"#c0a060"},
+  {rank:23,handle:"@tanya_sky",   initials:"ТС",score:1480,delta:-15, bg:"#202838",tc:"#6070c0"},
+  {rank:24,handle:"@andrey_beat", initials:"АБ",score:1340,delta:null,bg:"#382828",tc:"#c07070"},
+  {rank:25,handle:"@sveta_loop",  initials:"СЛ",score:1210,delta:8,   bg:"#283820",tc:"#80c050"},
+  {rank:26,handle:"@misha_groove",initials:"МГ",score:1090,delta:-9,  bg:"#203038",tc:"#50a0c0"},
+  {rank:27,handle:"@vera_live",   initials:"ВЛ",score:980, delta:12,  bg:"#302038",tc:"#a050c0"},
+  {rank:28,handle:"@egor_flow",   initials:"ЕФ",score:870, delta:null,bg:"#383828",tc:"#b0b050"},
+  {rank:29,handle:"@anya_youth",  initials:"АЮ",score:770, delta:-23, bg:"#203820",tc:"#60c060"},
+  {rank:30,handle:"@kostya_vox",  initials:"КВ",score:670, delta:18,  bg:"#383020",tc:"#c09050"},
+];
+const LEGENDS_LIST=[
+  {rank:4,handle:"@bass_wizard",initials:"БВ",score:98200,delta:5,bg:"#1e2e3e",tc:"#70b0d0"},
+  {rank:5,handle:"@eternal_fan",initials:"ЕФ",score:87650,delta:-3,bg:"#2e1e1e",tc:"#d08070"},
+  {rank:6,handle:"@first_concert",initials:"FC",score:76400,delta:1,bg:"#1e2e1e",tc:"#80c080"},
+  {rank:7,handle:"@vinyl_only",initials:"ВО",score:65100,delta:-2,bg:"#2e2e1e",tc:"#c0b070"},
+  {rank:8,handle:"@backstage_vip",initials:"БС",score:54800,delta:8,bg:"#1e1e2e",tc:"#9090d0"},
+  {rank:9,handle:"@night_chorus",initials:"НХ",score:48200,delta:null,bg:"#2e1e2e",tc:"#c080b0"},
+  {rank:10,handle:"@wave_rider_og",initials:"WR",score:43600,delta:4,bg:"#1e2e28",tc:"#70c0a0"},
+  {rank:11,handle:"@decade_strong",initials:"ДС",score:39800,delta:-7,bg:"#28201e",tc:"#c0a080"},
+  {rank:12,handle:"@echo_chamber",initials:"ЭЧ",score:35200,delta:3,bg:"#1e2830",tc:"#60a0c0"},
+];
+const CARD_H={1:220,2:188,3:162},CARD_BG={1:"#1a1408",2:"#111",3:"#111"};
+let activeTab='week',expanded=false;
+
+function fmt(n){return n.toLocaleString('ru');}
+function deltaHtml(v){if(v===null)return'<span style="color:#666">—</span>';return`<span style="color:${v>0?'#4caf7a':'#e05252'};font-weight:700">${v>0?'↑':'↓'} ${Math.abs(v)}</span>`;}
+const EMOJIS=['😎','🎸','🦋','🐺','🦊','🎯','🌙','⚡','🔥','🎵','🦁','🐉','🌊','🎭','🦅','🌟','🎪','🏔️','🎨','🦄'];
+function av(p,size,border){
+  const b=border?`border:1.5px solid ${border};`:'border:1px solid #2a2a2a;';
+  const idx=p.rank?p.rank-1:null;
+  const useEmoji=idx!==null&&idx%2===0&&!p.noEmoji;
+  if(useEmoji){
+    const emoji=EMOJIS[idx%EMOJIS.length];
+    const fs=Math.round(size*.48);
+    return`<div style="width:${size}px;height:${size}px;border-radius:50%;background:${p.bg};${b}display:flex;align-items:center;justify-content:center;font-size:${fs}px;flex-shrink:0;line-height:1;">${emoji}</div>`;
+  }
+  return`<div style="width:${size}px;height:${size}px;border-radius:50%;background:${p.bg};${b}display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-weight:700;font-size:${Math.round(size*.3)}px;color:${p.tc};flex-shrink:0;">${p.initials}</div>`;
+}
+function renderPodium(){
+  const t=activeTab==='week'?TOP3:LEGENDS_TOP3,o=[t[0],t[1],t[2]];
+  document.getElementById('podium').innerHTML=o.map(p=>{
+    const h=CARD_H[p.rank],az=p.rank===1?72:p.rank===2?60:52,ss=p.rank===1?15:p.rank===2?13:12;
+    return`<div style="background:${CARD_BG[p.rank]};border:1px solid ${p.border};border-radius:14px;padding:10px 6px 8px;text-align:center;position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;height:${h}px;">
+      ${p.rank===1?'<div style="font-size:14px;margin-bottom:2px;">👑</div>':''}
+      <div style="font-family:\'Unbounded\',sans-serif;font-size:11px;font-weight:700;color:${p.rc};">${p.rank}</div>
+      ${av(p,az,p.border)}
+      <div style="font-size:10px;color:${p.rc};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%;padding:0 4px;">${p.handle}</div>
+      <div style="font-family:\'Unbounded\',sans-serif;font-size:${ss}px;font-weight:700;color:#f0f0f0;">${fmt(p.score)}</div>
+      <div style="font-size:11px;font-weight:600;">${deltaHtml(p.delta)}</div>
+    </div>`;
+  }).join('');
+}
+function renderList(){
+  const list=(activeTab==='week'?LIST:LEGENDS_LIST).slice(0,expanded?30:7);
+  document.getElementById('list-rows').innerHTML=list.map(p=>{
+    const me=p.isMe||false;
+    return`<div class="list-row ${me?'me':''}" ${me?'onclick="goProfile()"':''}>
+      <div class="lrank ${me?'me':''}">${p.rank}</div>
+      ${av(p,32,null)}
+      <div class="lhandle ${me?'me':''}">${p.handle}${me?'<span style="font-size:10px;color:#555;margin-left:4px;">(вы)</span>':''}</div>
+      <div class="lscore" style="${me?'color:#d4a843':''}">${fmt(p.score)}</div>
+      ${deltaHtml(p.delta)}
+    </div>`;
+  }).join('');
+}
+function switchTab(tab){
+  activeTab=tab;expanded=false;
+  document.getElementById('tab-week').classList.toggle('active',tab==='week');
+  document.getElementById('tab-legends').classList.toggle('active',tab==='legends');
+  document.getElementById('tab-hint').textContent=tab==='week'?'обновляется еженедельно':'за всё время';
+  document.getElementById('show-more-btn').textContent='Показать всех ∨';
+  renderPodium();renderList();
+}
+function toggleExpanded(){
+  expanded=!expanded;
+  document.getElementById('show-more-btn').textContent=expanded?'Скрыть ∧':'Показать всех ∨';
+  renderList();
+}
+
+/* ===================== NAV ===================== */
+function navTo(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  document.getElementById('nav-rating').classList.toggle('active', name==='rating');
+  document.getElementById('nav-profile').classList.toggle('active', name==='profile');
+  // если переключились на профиль, всегда показываем главный экран профиля (а не настройки)
+  if(name==='profile'){
+    document.getElementById('fb-screen-main').classList.add('active');
+    document.getElementById('fb-screen-settings').classList.remove('active');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function goProfile(){ navTo('profile'); }
+
+/* ===================== MODALS ===================== */
+function openRules(){document.getElementById('rules-modal').classList.add('open');document.body.style.overflow='hidden';}
+document.getElementById('close-rules').addEventListener('click',()=>{document.getElementById('rules-modal').classList.remove('open');document.body.style.overflow='';});
+document.getElementById('rules-modal').addEventListener('click',e=>{if(e.target===document.getElementById('rules-modal')){document.getElementById('rules-modal').classList.remove('open');document.body.style.overflow='';}});
+
+function openSupport(){document.getElementById('sup-modal').style.display='block';document.body.style.overflow='hidden';}
+function closeSupport(){document.getElementById('sup-modal').style.display='none';document.body.style.overflow='';}
+document.getElementById('sup-modal').addEventListener('click',e=>{if(e.target===document.getElementById('sup-modal'))closeSupport();});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    closeSupport();
+    document.getElementById('rules-modal').classList.remove('open');
+    closeSheets();
+    closeSettingsModal();
+    document.body.style.overflow='';
+  }
+});
+
+/* ===================== DONATE ===================== *
+ * Состояния донат-карточки:
+ *   idle      → ничего не выбрано/введено, кнопка disabled «Выбери сумму»
+ *   ready     → валидная сумма, кнопка активна с превью баллов
+ *   bonus     → сумма ≥ 1000, в подсказке зелёный бейдж «×1.5 бонус»
+ *   invalid   → введена явно невалидная сумма (отрицательная, 0), красная подсказка
+ *   busy      → submit нажат, имитируем обработку, кнопка со спиннером
+ *   success   → карточка заменяется финальным экраном
+ */
+let selAmt = null;
+let customMode = false;
+
+function donateState(){
+  const conf = document.getElementById('donate-confirm');
+  const hint = document.getElementById('donate-hint');
+  const input = document.getElementById('custom-amt');
+
+  // если идёт processing, не трогаем UI
+  if (conf.dataset.busy === '1') return;
+
+  // утилита: показать/скрыть hint
+  const setHint = (html) => {
+    if (html) { hint.innerHTML = html; hint.style.display = ''; }
+    else      { hint.innerHTML = ''; hint.style.display = 'none'; }
+  };
+
+  if (selAmt === null) {
+    conf.textContent = 'Выбери сумму';
+    conf.disabled = true;
+    setHint('');
+    if (input) input.classList.remove('selected');
+    return;
+  }
+  if (selAmt <= 0 || isNaN(selAmt)) {
+    conf.textContent = 'Введи корректную сумму';
+    conf.disabled = true;
+    setHint('<div class="invalid-hint">Сумма должна быть больше нуля</div>');
+    return;
+  }
+  const pts = selAmt >= 1000 ? Math.round(selAmt * 1.5) : selAmt;
+  conf.textContent = `Поддержать на ${selAmt.toLocaleString('ru')} ₽ → ${pts.toLocaleString('ru')} баллов`;
+  conf.disabled = false;
+  if (selAmt >= 1000) {
+    setHint('<div class="bonus-hint">⭐ ×1.5 бонус активен — спасибо за щедрость!</div>');
+  } else if (selAmt >= 500) {
+    setHint(`<div style="font-size:11px;color:var(--color-text-tertiary);">Ещё ${(1000-selAmt).toLocaleString('ru')} ₽ до бонуса ×1.5</div>`);
+  } else {
+    setHint('');
+  }
+}
+
+// Чипы 200/500/1000 — обычные пресеты
+document.querySelectorAll('.amt-btn[data-val]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.amt-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    // если был открыт custom — свернуть и очистить
+    customMode = false;
+    const wrap = document.getElementById('custom-amt-wrap');
+    const inp = document.getElementById('custom-amt');
+    wrap.style.display = 'none';
+    inp.value = '';
+    inp.classList.remove('selected');
+    selAmt = parseInt(btn.dataset.val);
+    donateState();
+  });
+});
+
+// Кнопка "своя" — раскрывает инпут
+document.getElementById('custom-amt-trigger').addEventListener('click', () => {
+  document.querySelectorAll('.amt-btn').forEach(b => b.classList.remove('selected'));
+  const trigger = document.getElementById('custom-amt-trigger');
+  trigger.classList.add('selected');
+  customMode = true;
+  const wrap = document.getElementById('custom-amt-wrap');
+  const inp = document.getElementById('custom-amt');
+  wrap.style.display = 'block';
+  selAmt = null;
+  donateState();
+  // фокус с микро-задержкой, чтобы анимация прошла
+  setTimeout(() => inp.focus(), 50);
+});
+
+document.getElementById('custom-amt').addEventListener('input', function(){
+  const raw = this.value.trim();
+  if (raw === '') { selAmt = null; this.classList.remove('selected'); donateState(); return; }
+  const n = parseInt(raw);
+  selAmt = isNaN(n) ? 0 : n;
+  this.classList.toggle('selected', selAmt > 0);
+  // у "своя" остаётся подсветка-плашка
+  donateState();
+});
+
+function submitDonate(){
+  const conf = document.getElementById('donate-confirm');
+  if (conf.disabled || conf.dataset.busy === '1' || !selAmt || selAmt <= 0) return;
+
+  // busy state
+  conf.dataset.busy = '1';
+  conf.disabled = true;
+  conf.innerHTML = '<span class="spinner"></span>Обработка платежа…';
+
+  // имитируем сетевой запрос
+  setTimeout(() => {
+    const pts = selAmt >= 1000 ? Math.round(selAmt * 1.5) : selAmt;
+    document.getElementById('donate-card-inner').innerHTML =
+      `<div class="sc-head">
+         <div class="sc-ico" style="background:rgba(76,175,122,.14);"><i class="ti ti-check" style="font-size:18px;color:#4caf7a;" aria-hidden="true"></i></div>
+         <div class="sc-title">Донат принят</div>
+         <div class="sc-badge" style="background:rgba(76,175,122,.14);color:#4caf7a;">+${pts.toLocaleString('ru')} баллов</div>
+       </div>
+       <div class="sc-desc" style="margin-bottom:0;">Спасибо за поддержку — баллы уже у тебя на счёте.</div>`;
+    renderIcons(document.getElementById('donate-card-inner'));
+  }, 700);
+}
+
+donateState(); // инициализация — disabled
+
+/* ===================== UPLOADS (мерч/хэштег) =====================
+ * Состояния:
+ *   empty    → дроп-зона видна, кнопка disabled «Сначала загрузи…»
+ *   filled   → файл выбран, кнопка активна «Отправить на проверку»
+ *   busy     → отправка, спиннер
+ *   pending  → отправлено, ждём проверки модераторов
+ */
+function setupUpload(zoneId,nameId,rmId,confirmId,emptyText,readyText){
+  const zone = document.getElementById(zoneId);
+  const conf = document.getElementById(confirmId);
+  conf.disabled = true;
+  conf.textContent = emptyText;
+
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'image/*'; inp.style.display = 'none';
+  document.body.appendChild(inp);
+
+  zone.addEventListener('click', () => inp.click());
+  inp.addEventListener('change', () => {
+    if(!inp.files[0]) return;
+    document.getElementById(nameId).textContent = inp.files[0].name;
+    document.getElementById(nameId).parentElement.style.display = 'flex';
+    zone.style.display = 'none';
+    conf.textContent = readyText;
+    conf.disabled = false;
+  });
+  document.getElementById(rmId).addEventListener('click', () => {
+    inp.value = '';
+    document.getElementById(nameId).parentElement.style.display = 'none';
+    zone.style.display = 'flex';
+    conf.textContent = emptyText;
+    conf.disabled = true;
+  });
+}
+setupUpload('merch-zone','merch-fname','merch-rm','merch-confirm','Сначала загрузи фото','Отправить на проверку');
+setupUpload('hash-zone','hash-fname','hash-rm','hash-confirm','Сначала загрузи скрин','Отправить на проверку');
+
+function submitMerch(){
+  const conf = document.getElementById('merch-confirm');
+  if (conf.disabled || conf.dataset.busy === '1') return;
+  conf.dataset.busy = '1'; conf.disabled = true;
+  conf.innerHTML = '<span class="spinner"></span>Отправляем…';
+  setTimeout(() => {
+    document.getElementById('merch-card-inner').innerHTML =
+      `<div class="sc-head">
+         <div class="sc-ico" style="background:rgba(212,168,67,.14);"><i class="ti ti-clock" style="font-size:17px;color:#d4a843;" aria-hidden="true"></i></div>
+         <div class="sc-title">Фото на проверке</div>
+         <div class="sc-badge" style="background:rgba(212,168,67,.14);color:#d4a843;">Ожидание</div>
+       </div>
+       <div class="sc-desc" style="margin-bottom:0;">Модераторы проверят фото в течение 24 часов. Баллы придут после подтверждения.</div>`;
+    renderIcons(document.getElementById('merch-card-inner'));
+  }, 600);
+}
+function submitHash(){
+  const conf = document.getElementById('hash-confirm');
+  if (conf.disabled || conf.dataset.busy === '1') return;
+  conf.dataset.busy = '1'; conf.disabled = true;
+  conf.innerHTML = '<span class="spinner"></span>Отправляем…';
+  setTimeout(() => {
+    document.getElementById('hash-card-inner').innerHTML =
+      `<div class="sc-head">
+         <div class="sc-ico" style="background:rgba(212,168,67,.14);"><i class="ti ti-clock" style="font-size:17px;color:#d4a843;" aria-hidden="true"></i></div>
+         <div class="sc-title">Скрин на проверке</div>
+         <div class="sc-badge" style="background:rgba(212,168,67,.14);color:#d4a843;">Ожидание</div>
+       </div>
+       <div class="sc-desc" style="margin-bottom:0;">Модераторы проверят скрин в течение 24 часов. Баллы придут после подтверждения.</div>`;
+    renderIcons(document.getElementById('hash-card-inner'));
+  }, 600);
+}
+
+document.getElementById('copy-hash').addEventListener('click', () => {
+  const b = document.getElementById('copy-hash');
+  navigator.clipboard.writeText('#Елфимов').then(() => {
+    b.innerHTML = '<i class="ti ti-check" style="font-size:13px;" aria-hidden="true"></i> Скопировано';
+    b.style.color = '#4caf7a';
+    b.style.borderColor = 'rgba(76,175,122,.4)';
+    renderIcons(b);
+    setTimeout(() => {
+      b.innerHTML = '<i class="ti ti-copy" style="font-size:13px;" aria-hidden="true"></i> Копировать';
+      b.style.color = '';
+      b.style.borderColor = '';
+      renderIcons(b);
+    }, 2000);
+  });
+});
+
+/* ===================== VK CONNECT ===================== *
+ * idle → busy (имитация OAuth-редиректа) → connected
+ */
+document.getElementById('vk-connect').addEventListener('click', function(){
+  if (this.dataset.busy === '1' || this.dataset.connected === '1') return;
+  this.dataset.busy = '1';
+  this.disabled = true;
+  this.innerHTML = '<span class="spinner light"></span>Подключаем…';
+  setTimeout(() => {
+    this.dataset.busy = '';
+    this.dataset.connected = '1';
+    this.style.background = 'rgba(76,175,122,.10)';
+    this.style.borderColor = 'rgba(76,175,122,.35)';
+    this.style.color = '#4caf7a';
+    this.innerHTML = '<i class="ti ti-check" style="font-size:15px;" aria-hidden="true"></i> ВКонтакте подключён';
+    renderIcons(this);
+  }, 900);
+});
+
+renderPodium();renderList();
+
+let prizesOpen=true;
+// стартовое состояние — открыто, шеврон смотрит вверх
+(function initPrizesChevron(){
+  const c=document.getElementById('prizes-chevron');
+  if(c) c.style.transform='rotate(180deg)';
+})();
+function togglePrizes(){
+  const body=document.getElementById('prizes-body');
+  const chevron=document.getElementById('prizes-chevron');
+  if(prizesOpen){
+    body.style.animation='prizesOut 0.22s ease forwards';
+    setTimeout(()=>{ body.style.display='none'; body.style.animation=''; },220);
+    chevron.style.transform='rotate(0deg)'; // вниз = «нажми, чтобы открыть»
+  } else {
+    body.style.display='flex';
+    body.style.animation='prizesIn 0.25s ease forwards';
+    chevron.style.transform='rotate(180deg)'; // вверх = «нажми, чтобы свернуть»
+  }
+  prizesOpen=!prizesOpen;
+}
+
+/* ===================== PROFILE LOGIC (макет 2) ===================== */
+(function(){
+  const achievements = {
+    voice:    {icon:'ti-message-2', color:'#1D9E75', title:'Голос толпы',  desc:'Оставь 50 комментариев под постами в VK', curr:41, total:50, unit:'комментариев', reward:200, state:'progress'},
+    star:     {icon:'ti-star',      color:'#E9B949', title:'Звёздный час', desc:'Заходи в приложение 10 дней подряд',       curr:7,  total:10, unit:'дней',         reward:150, state:'progress'},
+    flame:    {icon:'ti-flame',     color:'#D85A30', title:'Огонь стрик',  desc:'Поставь 30 лайков за неделю',              curr:12, total:30, unit:'лайков',       reward:120, state:'progress'},
+    loyal:    {icon:'ti-flame',     color:'#D85A30', title:'Верный фан',   desc:'Год с момента подписки',                   curr:1,  total:1,  unit:'',             reward:150, state:'done'},
+    patron:   {icon:'ti-diamond',   color:'#E9B949', title:'Меценат',      desc:'Поддержи кумира донатом',                   curr:1,  total:1,  unit:'',             reward:300, state:'done'},
+    liker:    {icon:'ti-thumb-up',  color:'#1D9E75', title:'Лайкомёт',     desc:'Поставь 100 лайков',                        curr:1,  total:1,  unit:'',             reward:100, state:'done'},
+    legend:   {icon:'ti-crown',     color:'#888780', title:'Легенда',      desc:'Войди в топ-3 рейтинга',                    curr:0,  total:1,  unit:'',             reward:500, state:'locked'},
+    marathon: {icon:'ti-run',       color:'#888780', title:'Марафон',      desc:'30 дней активности подряд',                 curr:0,  total:30, unit:'дней',         reward:250, state:'locked'},
+    first:    {icon:'ti-medal',     color:'#888780', title:'Первый',       desc:'Прокомментируй пост в первые 5 минут',      curr:0,  total:1,  unit:'',             reward:200, state:'locked'},
+    hype:     {icon:'ti-bolt',      color:'#888780', title:'Хайп',         desc:'Сделай репост, который соберёт 100 лайков', curr:0,  total:1,  unit:'',             reward:180, state:'locked'},
+    sharp:    {icon:'ti-eye',       color:'#888780', title:'Зоркий',       desc:'Заметь и сообщи об ошибке в приложении',    curr:0,  total:1,  unit:'',             reward:120, state:'locked'},
+    start:    {icon:'ti-rocket',    color:'#888780', title:'Старт',        desc:'Заверши онбординг и заполни профиль',       curr:0,  total:1,  unit:'',             reward:100, state:'locked'}
+  };
+
+  function hexToRgba(hex, a){
+    const h = hex.replace('#','');
+    const r = parseInt(h.substring(0,2),16);
+    const g = parseInt(h.substring(2,4),16);
+    const b = parseInt(h.substring(4,6),16);
+    return `rgba(${r},${g},${b},${a})`;
+  }
+
+  function openAchievement(id){
+    const a = achievements[id];
+    if (!a) return;
+    const iconWrap = document.getElementById('ach-icon-wrap');
+    const icon = document.getElementById('ach-icon');
+    iconWrap.style.background = hexToRgba(a.color, 0.18);
+    iconWrap.style.borderColor = hexToRgba(a.color, 0.3);
+    icon.className = 'ti ' + a.icon;
+    icon.style.color = a.color;
+    // переотрисовать инлайн-SVG, поскольку класс изменился
+    icon.dataset.rendered = '';
+    icon.style.fontSize = '36px';
+    renderIcons(icon.parentElement);
+    document.getElementById('ach-title').textContent = a.title;
+    document.getElementById('ach-desc').textContent = a.desc;
+    document.getElementById('ach-curr').textContent = a.curr;
+    document.getElementById('ach-total').textContent = a.total;
+    const pct = Math.round((a.curr / a.total) * 100);
+    const bar = document.getElementById('ach-bar');
+    bar.style.width = pct + '%';
+    bar.style.background = a.state === 'locked' ? 'rgba(255,255,255,0.15)' : a.color;
+    const remain = a.total - a.curr;
+    const remainEl = document.getElementById('ach-remain');
+    if (a.state === 'done') {
+      remainEl.textContent = 'Получена';
+      remainEl.style.color = '#1D9E75';
+    } else if (a.state === 'locked') {
+      remainEl.textContent = 'Не открыта';
+      remainEl.style.color = 'rgba(255,255,255,0.4)';
+    } else {
+      remainEl.textContent = `Осталось ${remain} ${a.unit}`.trim();
+      remainEl.style.color = 'rgba(255,255,255,0.5)';
+    }
+    document.getElementById('ach-reward').textContent = a.reward;
+    document.getElementById('overlay-main').classList.add('active');
+    document.getElementById('sheet-achievement').classList.add('active');
+  }
+
+  window.closeSheets = function(){
+    const om = document.getElementById('overlay-main');
+    const sa = document.getElementById('sheet-achievement');
+    const ma = document.getElementById('modal-avatar');
+    if(om) om.classList.remove('active');
+    if(sa) sa.classList.remove('active');
+    if(ma) ma.classList.remove('active');
+  };
+  window.closeSettingsModal = function(){
+    const os = document.getElementById('overlay-settings');
+    const mas = document.getElementById('modal-avatar-settings');
+    if(os) os.classList.remove('active');
+    if(mas) mas.classList.remove('active');
+  };
+
+  document.querySelectorAll('.achievement-card').forEach(card => {
+    card.addEventListener('click', () => openAchievement(card.dataset.ach));
+  });
+  document.querySelectorAll('.close-sheet, .close-modal').forEach(b => b.addEventListener('click', window.closeSheets));
+  document.getElementById('overlay-main').addEventListener('click', window.closeSheets);
+  document.querySelectorAll('.close-modal-settings').forEach(b => b.addEventListener('click', window.closeSettingsModal));
+  document.getElementById('overlay-settings').addEventListener('click', window.closeSettingsModal);
+
+  /* ===================== SWIPE-TO-CLOSE для bottom-sheet ===================== */
+  (function(){
+    const sheet = document.getElementById('sheet-achievement');
+    const grab  = sheet.querySelector('.fb-sheet-grab');
+    if(!sheet || !grab) return;
+
+    let startY = 0, dy = 0, dragging = false, startedAtTop = true;
+
+    // Свайп вниз можно начать с любого места шита, но при скролле внутрь — только если контент уже наверху
+    const onStart = (e) => {
+      const t = (e.touches ? e.touches[0] : e);
+      startY = t.clientY;
+      dy = 0;
+      // если скролл внутри шита не на самом верху — свайп закрытия не запускаем (даём обычный скролл)
+      startedAtTop = sheet.scrollTop <= 0;
+      dragging = false;
+    };
+    const onMove = (e) => {
+      const t = (e.touches ? e.touches[0] : e);
+      const delta = t.clientY - startY;
+      if (delta <= 0) { // палец движется вверх — обычный скролл/ничего
+        if (dragging) { sheet.style.transform = 'translateY(0)'; dy = 0; }
+        return;
+      }
+      // активируем drag только когда контент шита наверху и палец явно идёт вниз
+      if (!startedAtTop) return;
+      if (!dragging && delta > 6) {
+        dragging = true;
+        sheet.classList.add('dragging');
+      }
+      if (dragging) {
+        dy = delta;
+        // лёгкое «сопротивление» в конце
+        const move = dy < 200 ? dy : 200 + (dy - 200) * 0.4;
+        sheet.style.transform = `translateY(${move}px)`;
+        if (e.cancelable) e.preventDefault();
+      }
+    };
+    const onEnd = () => {
+      if (!dragging) return;
+      sheet.classList.remove('dragging');
+      // порог: закрыть, если протащили на 110px+
+      if (dy > 110) {
+        sheet.classList.add('closing');
+        // подождём конец анимации и закроем
+        setTimeout(() => {
+          sheet.classList.remove('closing');
+          sheet.style.transform = '';
+          window.closeSheets();
+        }, 220);
+      } else {
+        // откат назад
+        sheet.style.transition = 'transform 0.18s ease';
+        sheet.style.transform = 'translateY(0)';
+        setTimeout(() => { sheet.style.transition = ''; sheet.style.transform = ''; }, 180);
+      }
+      dragging = false; dy = 0;
+    };
+
+    // Touch (mobile)
+    grab.addEventListener('touchstart', onStart, {passive:true});
+    sheet.addEventListener('touchstart', onStart, {passive:true});
+    sheet.addEventListener('touchmove', onMove, {passive:false});
+    sheet.addEventListener('touchend', onEnd, {passive:true});
+    sheet.addEventListener('touchcancel', onEnd, {passive:true});
+  })();
+
+  function setupToggle(buttonId, itemClass) {
+    const btn = document.getElementById(buttonId);
+    if (!btn) return;
+    let expanded = false;
+    btn.addEventListener('click', () => {
+      expanded = !expanded;
+      document.querySelectorAll('.' + itemClass).forEach(el => {
+        el.style.display = expanded ? 'flex' : 'none';
+      });
+      const label = btn.querySelector('span');
+      const chevron = btn.querySelector('i');
+      if (expanded) { label.textContent = 'Свернуть'; chevron.classList.replace('ti-chevron-right','ti-chevron-down'); }
+      else { label.textContent = 'Показать все'; chevron.classList.replace('ti-chevron-down','ti-chevron-right'); }
+      chevron.dataset.rendered = '';
+      renderIcons(chevron.parentElement);
+    });
+  }
+  setupToggle('toggle-progress', 'progress-extra');
+  setupToggle('toggle-locked', 'locked-extra');
+
+  // settings nav (внутри профиля)
+  document.getElementById('btn-settings').addEventListener('click', () => {
+    document.getElementById('fb-screen-main').classList.remove('active');
+    document.getElementById('fb-screen-settings').classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+  document.getElementById('btn-back').addEventListener('click', () => {
+    document.getElementById('fb-screen-settings').classList.remove('active');
+    document.getElementById('fb-screen-main').classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
+  let avatarState = { hasPhoto:false, color:'#E9B949' };
+
+  function renderAvatarPreview(el, big){
+    if (!el) return;
+    if (avatarState.hasPhoto) {
+      el.innerHTML = '';
+      el.style.background = 'linear-gradient(135deg,#4a5a6e 0%,#8b9cb0 50%,#d4c4a8 100%)';
+      el.style.overflow = 'hidden';
+      el.style.position = 'relative';
+      el.innerHTML = '<div style="width:50%;height:50%;border-radius:50%;background:rgba(255,255,255,0.4);position:absolute;left:25%;bottom:-15%;"></div>';
+      el.style.display = 'block';
+    } else {
+      el.innerHTML = 'МЕ';
+      el.style.background = avatarState.color;
+      el.style.color = '#2a1f0a';
+      el.style.display = 'flex';
+      el.style.alignItems = 'center';
+      el.style.justifyContent = 'center';
+      el.style.fontWeight = '500';
+      el.style.fontSize = big ? '30px' : (el.id === 'settings-avatar-circle' ? '26px' : '20px');
+      el.style.overflow = '';
+      el.style.position = '';
+    }
+  }
+
+  function renderAllAvatars(){
+    renderAvatarPreview(document.getElementById('main-avatar-circle'), false);
+    renderAvatarPreview(document.getElementById('settings-avatar-circle'), false);
+    renderAvatarPreview(document.getElementById('modal-avatar-preview'), true);
+    renderAvatarPreview(document.getElementById('modal-avatar-preview-2'), true);
+  }
+
+  function refreshModalUI(modalSuffix){
+    const colorSection = document.getElementById('color-section' + modalSuffix);
+    const uploadLabel = document.getElementById('upload-label' + modalSuffix);
+    const deleteBtn = document.getElementById('btn-delete-photo' + modalSuffix);
+    if (avatarState.hasPhoto) {
+      colorSection.style.display = 'none';
+      uploadLabel.textContent = 'Заменить фото';
+      deleteBtn.style.display = 'flex';
+    } else {
+      colorSection.style.display = 'block';
+      uploadLabel.textContent = 'Загрузить фото';
+      deleteBtn.style.display = 'none';
+    }
+  }
+
+  function openAvatarModalMain(){
+    refreshModalUI('');
+    renderAllAvatars();
+    document.getElementById('overlay-main').classList.add('active');
+    document.getElementById('modal-avatar').classList.add('active');
+  }
+  function openAvatarModalSettings(){
+    refreshModalUI('-2');
+    renderAllAvatars();
+    document.getElementById('overlay-settings').classList.add('active');
+    document.getElementById('modal-avatar-settings').classList.add('active');
+  }
+
+  document.getElementById('btn-avatar').addEventListener('click', openAvatarModalMain);
+  document.getElementById('btn-avatar-settings').addEventListener('click', openAvatarModalSettings);
+  document.getElementById('btn-avatar-link').addEventListener('click', openAvatarModalSettings);
+
+  document.querySelectorAll('#color-palette .color-dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+      document.querySelectorAll('#color-palette .color-dot').forEach(d => d.classList.remove('selected'));
+      dot.classList.add('selected');
+      avatarState.color = dot.dataset.color;
+      document.querySelectorAll('#color-palette-2 .color-dot-2').forEach(d => {
+        d.classList.toggle('selected', d.dataset.color === avatarState.color);
+      });
+      renderAllAvatars();
+    });
+  });
+  document.querySelectorAll('#color-palette-2 .color-dot-2').forEach(dot => {
+    dot.addEventListener('click', () => {
+      document.querySelectorAll('#color-palette-2 .color-dot-2').forEach(d => d.classList.remove('selected'));
+      dot.classList.add('selected');
+      avatarState.color = dot.dataset.color;
+      document.querySelectorAll('#color-palette .color-dot').forEach(d => {
+        d.classList.toggle('selected', d.dataset.color === avatarState.color);
+      });
+      renderAllAvatars();
+    });
+  });
+
+  document.getElementById('btn-upload').addEventListener('click', () => {
+    avatarState.hasPhoto = true;
+    refreshModalUI('');
+    renderAllAvatars();
+  });
+  document.getElementById('btn-upload-2').addEventListener('click', () => {
+    avatarState.hasPhoto = true;
+    refreshModalUI('-2');
+    renderAllAvatars();
+  });
+  document.getElementById('btn-delete-photo').addEventListener('click', () => {
+    avatarState.hasPhoto = false;
+    refreshModalUI('');
+    renderAllAvatars();
+  });
+  document.getElementById('btn-delete-photo-2').addEventListener('click', () => {
+    avatarState.hasPhoto = false;
+    refreshModalUI('-2');
+    renderAllAvatars();
+  });
+
+  document.querySelectorAll('.toggle-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const sw = row.querySelector('.toggle-switch');
+      const thumb = row.querySelector('.toggle-thumb');
+      const on = sw.dataset.on === 'true';
+      const newOn = !on;
+      sw.dataset.on = newOn ? 'true' : 'false';
+      if (newOn) {
+        sw.style.background = '#E9B949';
+        thumb.style.left = 'auto';
+        thumb.style.right = '2px';
+      } else {
+        sw.style.background = 'rgba(255,255,255,0.12)';
+        thumb.style.right = 'auto';
+        thumb.style.left = '2px';
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
